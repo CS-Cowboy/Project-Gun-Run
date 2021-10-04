@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8628dfc49d9ae9488de0bee3488f734, type: 3}
+  m_Name: ModernTruck
+  m_EditorClassIdentifier: 
+  topSpeed: 1424107.4
+  finalDrive: 5.04
+  suspensionDistance: 0.1
+  forwardFrictionStiffness: 1.25
+  sideFrictionStiffness: 1.15
+  wheelMassInKg: 20
+  tachometerLimitInRPM: 8000
+  massInKg: 1817
+  drag: 0.2
+  fireDelayTime: 0
+  reloadDelayTime: 0
+  wheelBaseLength: 3.9090605
+  wheelBaseWidth: 1.8084799
+  turnRadius: 10
+  antiRollForce: 454.25
+  hasAWD: 0
+  totalWheelCount: 4
+  hudPrefab: {fileID: 772892077814719115, guid: b053cd9c37cb6164497474a47549e851, type: 3}
+  engineSpeedToGearsCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -41.381805
+      value: 2.6261952
+      inSlope: 0.0025556767
+      outSlope: 0.0025556767
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.04890739
+    - serializedVersion: 3
+      time: 7992.497
+      value: 0.29852718
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
