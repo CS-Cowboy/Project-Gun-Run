@@ -14,43 +14,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   topSpeed: 199
   brakingForce: 2000
+  horsePower: 500
   finalDrive: 5.04
   suspensionDistance: 0.1
   forwardFrictionStiffness: 1.25
   sideFrictionStiffness: 1.15
   wheelMassInKg: 20
-  tachometerLimitInRPM: 8000
-  massInKg: 1817
+  tachometerLimitInRPM: 6000
+  massInKg: 500
   drag: 0.2
   fireDelayTime: 0
   reloadDelayTime: 0
-  wheelBaseLength: 3.9090605
-  wheelBaseWidth: 1.8084799
-  turnRadius: 10
-  antiRollForce: 454.25
+  wheelBaseLength: 3.9079201
+  wheelBaseWidth: 1.8084781
+  turnRadius: 8
+  antiRollForce: 454
   hasAWD: 0
   totalWheelCount: 4
   hudPrefab: {fileID: 772892077814719115, guid: b053cd9c37cb6164497474a47549e851, type: 3}
-  engineSpeedToGearsCurve:
+  engineTorqueToGearsCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: -41.381805
-      value: 2.6261952
-      inSlope: 0.0025556767
-      outSlope: 0.0025556767
+      time: 1.0494255
+      value: 1.3875486
+      inSlope: 0.0052508567
+      outSlope: 0.0052508567
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.04890739
+      outWeight: 0.3668947
     - serializedVersion: 3
-      time: 15655.723
-      value: 0.20999569
-      inSlope: 0
-      outSlope: 0
+      time: 496.7862
+      value: 1.0291388
+      inSlope: -0.0032877666
+      outSlope: -0.0032877666
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.117480956
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2

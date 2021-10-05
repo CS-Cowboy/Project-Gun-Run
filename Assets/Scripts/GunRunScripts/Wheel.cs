@@ -7,23 +7,28 @@ namespace com.braineeeeDevs.gunRun
     /// A class to represent and tie together wheel collider, meshes, and functionality.
     /// </summary>
     [RequireComponent(typeof(Calculus))]
+
+    [RequireComponent(typeof(Calculus))]
     public class Wheel : VehicleComponent
     {
         public WheelCollider wheelCollider;
         public MeshRenderer mesh;
-        public Calculus wheelCalculus;
-        public float linearSlip, tireDiameterInMeters, inertia, nonLinearSlip, d = 1f, antiRollForce = 1f;
+        public Calculus wheelCalculus, slipCalculus;
+        public float linearSlip, tireDiameterInMeters, inertia, nonLinearSlip, antiRollForce = 1f;
         public uint wheelNumber = 0;
+        public bool isTurning = false;
         public float AngularVelocity
         {
-            get{
-                return  wheelCalculus.Velocity;
+            get
+            {
+                return wheelCalculus.Velocity;
             }
         }
-          public float AngularAcceleration
+        public float AngularAcceleration
         {
-            get{
-                return  wheelCalculus.Acceleration;
+            get
+            {
+                return wheelCalculus.Acceleration;
             }
         }
 
@@ -48,6 +53,7 @@ namespace com.braineeeeDevs.gunRun
             owner = GetComponentInParent<GroundVehicle>();
             mesh = GetComponent<MeshRenderer>();
             wheelCalculus = GetComponent<Calculus>();
+            slipCalculus = GetComponent<Calculus>();
         }
         /// <summary>
         /// Drives the given wheel. Divides the given engine torque to individual wheel torque range.
@@ -58,54 +64,31 @@ namespace com.braineeeeDevs.gunRun
         {
             if (owner != null && wheelCollider != null)
             {
-                owner.RBPhysics.AddForceAtPosition(Vector3.up * -antiRollForce, transform.parent.position);
-                if (!owner.applyingBrakes)
-                {
-                    wheelCollider.brakeTorque = 0f;
-                    wheelCollider.motorTorque = inputTorque;
-                }
-                else
-                {
-                    wheelCollider.brakeTorque = ((owner.traits.massInKg + wheelCollider.mass) * owner.traits.brakingForce);
-                    wheelCollider.motorTorque = 0f;
-                }
+                wheelCollider.motorTorque = inputTorque;
+                wheelCollider.brakeTorque =0f;
                 ComputeSlip(inputTorque);
                 ApplyPose();
+                wheelCalculus.Compute(mesh.transform.localEulerAngles.z * Mathf.Deg2Rad);
+                slipCalculus.Compute(linearSlip);
+                owner.RBPhysics.AddForceAtPosition(Vector3.up * -antiRollForce, transform.parent.position);
+                isTurning = Mathf.Abs(AngularVelocity) >= 1f;
+                Debug.Log(wheelCalculus.Velocity);
             }
         }
-
-        /* Saved for later reference**
-         float antiRollForce = (transform.localPosition.x < 0f ? this.GetSwayBarForce() - other.GetSwayBarForce() : other.GetSwayBarForce() - this.GetSwayBarForce());
-                        if (owner.applyingBrakes)
-                        {
-                            wheelCollider.brakeTorque = owner.traits.topSpeed * sim.mass / MathUtilities.wheelQuantity;
-                        }
-                        else
-                        {
-                            wheelCollider.brakeTorque = 0f;
-                            if (isMotorized)
-                            {
-                                wheelCollider.motorTorque = inputTorque;
-                            }
-                        }
-                        if (isSteerable)
-                        {
-                            this.SetSteerAngle(steerAngle);
-                        }
-
-         */
-        /// <summary>
+        public void ApplyBrake()
+        {
+            wheelCollider.brakeTorque = ((owner.traits.massInKg + wheelCollider.mass) * owner.traits.brakingForce);
+            wheelCollider.motorTorque = 0f;
+        }
         /// Computes the wheel's slip and speed.
         /// </summary>
         protected float ComputeSlip(float inputTorque)
         {
-            var rOmega = AngularVelocity * wheelCollider.radius;
-            wheelCalculus.Compute(wheelCollider.transform.eulerAngles * Mathf.Deg2Rad); //Wrong units???
-            inertia = AngularVelocity * Mathf.Pow(wheelCollider.radius, 2f) * wheelCollider.mass;
+            var rOmega = Mathf.Clamp(AngularVelocity * wheelCollider.radius, wheelCollider.radius, owner.traits.topSpeed * wheelCollider.radius);
+            inertia = Mathf.Clamp(AngularVelocity, 1f, owner.traits.topSpeed) * Mathf.Pow(wheelCollider.radius, 2f) * wheelCollider.mass;
             linearSlip = (rOmega - owner.RBPhysics.velocity.magnitude) / rOmega;
-            var term_1 = (owner.AngularAcceleration.magnitude / owner.AngularVelocity.magnitude) * (linearSlip - 1f);
-            var term_2 = (owner.AngularVelocity.magnitude / inertia * wheelCollider.radius * Mathf.Pow(AngularVelocity, 2f) * (inputTorque - wheelCollider.radius * wheelCollider.sprungMass * AngularAcceleration));
-            nonLinearSlip = term_1 + term_2 + d;
+            nonLinearSlip = slipCalculus.Velocity;
+
             //  Debug.Log(string.Format("NonLinearSlip for wheel {0}:=>> {1} ", wheelNumber, nonLinearSlip));
             return nonLinearSlip;
         }
@@ -118,7 +101,6 @@ namespace com.braineeeeDevs.gunRun
             Vector3 wheelPos = new Vector3();
             Quaternion wheelRot = new Quaternion();
             wheelCollider.GetWorldPose(out wheelPos, out wheelRot);
-            transform.parent.position = wheelPos;
             transform.parent.rotation = wheelRot * Quaternion.Euler(0f, 180f, 0f);
         }
 

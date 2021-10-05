@@ -4,19 +4,22 @@ namespace com.braineeeeDevs.gunRun
 {
     public class Transmission : VehicleComponent
     {
-        public float speed = 0f, outputTorque = 0f, gearRatio = 0f;
+        public float outputTorque = 0f, gearRatio = 0f; 
         public bool torqueConverterEngaged = true;
-        public override void Operate(float engineSpeed)
+        public override void Operate(float engineSpeedInRPM)
         {
+            var torque = 0f;
             if (torqueConverterEngaged)
             {
-                float sign = engineSpeed < 0f ? -1f : +1f; 
-                var absEngineSpd = Mathf.Abs(engineSpeed);
-                 gearRatio = owner.traits.engineSpeedToGearsCurve.Evaluate(absEngineSpd);
-                outputTorque = absEngineSpd * gearRatio * sign;
-                Debug.Log("GearRatio-> " + gearRatio);
-                Debug.Log("Output Tranny Torque-> " + outputTorque);
+                torque = Mathf.Abs(MathUtilities.hpToNM * owner.traits.horsePower / (engineSpeedInRPM * owner.wheels[0].tireDiameterInMeters));
+                gearRatio = owner.traits.engineTorqueToGearsCurve.Evaluate(torque) * owner.traits.finalDrive;
+                outputTorque = torque * gearRatio * owner.engine.driveDirection;
             }
+            else
+            {
+                outputTorque = 0f;
+            }
+            Debug.Log(string.Format("Input Torque -> {0}, Output Torque -> {1}, GearRatio-> {2}", torque, outputTorque, gearRatio));
         }
     }
 }

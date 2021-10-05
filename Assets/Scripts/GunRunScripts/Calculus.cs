@@ -8,9 +8,9 @@ namespace com.braineeeeDevs.gunRun
     /// </summary>
     public class Calculus : MonoBehaviour
     {
-        protected float linearPos, linearPrev, firstLinearDerivation, prevFirst_derivation, secondLinearDerivation;
-        protected Vector2 two_spacePosition, two_spacePrev, two_spaceDerivation, two_spacePrevFirst_derivation, two_spaceSecondDerivation;
-        protected Vector3 three_spacePosition, three_spacePrev, three_spaceDerivation, three_spacePrevFirst_derivation, three_spaceSecondDerivation;
+        protected float linearPos,firstLinearDerivation, prevLinearFirst_derivation, secondLinearDerivation, prevSecondLinearDerivation;
+        protected Vector2 two_spacePosition, two_spaceFirstDerivation, prevTwo_spaceFirst_derivation, two_spaceSecond_derivation, prevTwo_spaceSecond_derivation;
+        protected Vector3 three_spacePosition, three_spaceFirstDerivation, prevthree_spaceFirst_derivation, three_spaceSecond_derivation, prevThree_spaceSecond_derivation;
         /// <summary>
         /// The given value.
         /// </summary>
@@ -61,7 +61,7 @@ namespace com.braineeeeDevs.gunRun
         {
             get
             {
-                return two_spaceDerivation;
+                return two_spaceFirstDerivation;
             }
         }
         /// <summary>
@@ -71,7 +71,7 @@ namespace com.braineeeeDevs.gunRun
         {
             get
             {
-                return two_spaceSecondDerivation;
+                return two_spaceSecond_derivation;
             }
         }
 
@@ -95,7 +95,7 @@ namespace com.braineeeeDevs.gunRun
         {
             get
             {
-                return three_spaceDerivation;
+                return three_spaceFirstDerivation;
             }
         }
         /// <summary>
@@ -105,7 +105,7 @@ namespace com.braineeeeDevs.gunRun
         {
             get
             {
-                return three_spaceSecondDerivation;
+                return three_spaceSecond_derivation;
             }
         }
 
@@ -116,21 +116,21 @@ namespace com.braineeeeDevs.gunRun
         /// <param name="b">The current value.</param>
         /// <param name="a">The old value.</param>
         /// <returns>The differentiated value.</returns>
-        protected Vector3 Differentiate(Vector3 a, ref Vector3 b)
+        protected Vector3 Differentiate(Vector3 b, ref Vector3 a)
         {
             var diff = b - a;
             a = b;
             return diff;
         }
 
-        protected Vector2 Differentiate(Vector2 a, ref Vector2 b)
+        protected Vector2 Differentiate(Vector2 b, ref Vector2 a)
         {
             var diff = b - a;
             a = b;
             return diff;
         }
 
-        protected float Differentiate(float a, ref float b)
+        protected float Differentiate(float b, ref float a)
         {
             var diff = b - a;
             a = b;
@@ -139,25 +139,25 @@ namespace com.braineeeeDevs.gunRun
 
         /// <summary>
         /// Computesfloathe derivative and setsfloathe input for first and second differentiable T's. 
-        /// </summary>
+        /// </summary>  
         /// <param name="input"></param>
         public void Compute(Vector3 input)
         {
             three_spacePosition = input;
-            three_spaceDerivation = Differentiate(three_spacePosition, ref three_spacePrev);
-            three_spaceSecondDerivation = Differentiate(three_spaceDerivation, ref three_spacePrevFirst_derivation);
+            three_spaceFirstDerivation = Differentiate(three_spacePosition, ref prevthree_spaceFirst_derivation);
+            three_spaceSecond_derivation = Differentiate(three_spaceFirstDerivation, ref prevThree_spaceSecond_derivation);
         }
         public void Compute(Vector2 input)
         {
             two_spacePosition = input;
-            two_spaceDerivation = Differentiate(two_spacePosition, ref two_spacePrev);
-            two_spaceSecondDerivation = Differentiate(two_spaceDerivation, ref two_spacePrevFirst_derivation);
+            two_spaceFirstDerivation = Differentiate(two_spacePosition, ref prevTwo_spaceFirst_derivation);
+            two_spaceSecond_derivation = Differentiate(two_spaceFirstDerivation, ref prevTwo_spaceSecond_derivation);
         }
         public void Compute(float input)
         {
             linearPos = input;
-            firstLinearDerivation = Differentiate(linearPos, ref linearPrev);
-            secondLinearDerivation = Differentiate(firstLinearDerivation, ref prevFirst_derivation);
+            firstLinearDerivation = Differentiate(linearPos, ref prevLinearFirst_derivation);
+            secondLinearDerivation = Differentiate(firstLinearDerivation, ref prevSecondLinearDerivation);
         }
 
 

@@ -12,13 +12,14 @@ namespace com.braineeeeDevs.gunRun
         protected float damagePoints;
         public Wheel[] wheels = new Wheel[MathUtilities.wheelQuantity];
         public Transform orbiter;
-        public float steeringAngle = 0f, rightingForce = 20000f;
-        public bool applyingBrakes = true, TCEngaged = false, allWheelsGrounded = false;
-        protected Vector3 driveInput;
+        public float rightingForce = 3f;
+        public bool applyingBrakes = true, TCEngaged = false, allWheelsGrounded = false, allWheelsStopped = false;
+        protected Vector2 driveInput;
         public Calculus vehicleCalculus;
         public Engine engine;
         public Transmission transmission;
         public Differential front_differential, rear_differential;
+        public SwayBar front_swaybar, rear_swaybar;
         /// <summary>
         /// The physics simulator component.
         /// </summary>
@@ -34,7 +35,7 @@ namespace com.braineeeeDevs.gunRun
         /// The steering (x) and drive (z) inputs.
         /// </summary>
         /// <value>X component is used in steering while the Z component is used in drive direction.</value>
-        public Vector3 SteeringAndDrive
+        public Vector2 SteeringAndDrive
         {
             set
             {
@@ -46,14 +47,14 @@ namespace com.braineeeeDevs.gunRun
             }
         }
 
-        public Vector3 AngularVelocity
+        public Vector3 Velocity
         {
             get
             {
                 return (vehicleCalculus.ThreeSpaceVelocity);
             }
         }
-        public Vector3 AngularAcceleration
+        public Vector3 Acceleration
         {
             get
             {
@@ -72,29 +73,50 @@ namespace com.braineeeeDevs.gunRun
             {
                 CameraController.AttachTo(this);
             }
+            TCEngaged = transmission.torqueConverterEngaged;
         }
         void FixedUpdate()
         {
             vehicleCalculus.Compute(transform.position);
             engine.Operate(driveInput.y);
             transmission.Operate(engine.speed);
+
             front_differential.Operate(transmission.outputTorque * 0.5f);
             rear_differential.Operate(transmission.outputTorque * 0.5f);
+
+            front_swaybar.Operate();
+            rear_swaybar.Operate();
 
             float radius = wheels[0].wheelCollider.radius;
             wheels[0].SteerAngle = SteeringAndDrive.x > 0f ? ComputeAckermannSteering(radius, false) : ComputeAckermannSteering(radius, true);
             wheels[1].SteerAngle = SteeringAndDrive.x > 0f ? ComputeAckermannSteering(radius, false) : ComputeAckermannSteering(radius, true);
 
 
-            wheels[0].Operate(front_differential.left_torque);
-            wheels[1].Operate(front_differential.right_torque);
-            wheels[2].Operate(rear_differential.left_torque);
-            wheels[3].Operate(rear_differential.right_torque);
+            if (applyingBrakes)
+            {
+                wheels[0].Operate(0f);
+                wheels[1].Operate(0f);
+
+                wheels[2].Operate(0f);
+                wheels[3].Operate(0f);
+                
+                wheels[0].ApplyBrake();
+                wheels[1].ApplyBrake();
+
+                wheels[2].ApplyBrake();
+                wheels[3].ApplyBrake();
+            }
+            else
+            {
+                wheels[0].Operate(front_differential.left_torque);
+                wheels[1].Operate(front_differential.right_torque);
+
+                wheels[2].Operate(rear_differential.left_torque);
+                wheels[3].Operate(rear_differential.right_torque);
+            }
 
             allWheelsGrounded = wheels[0].wheelCollider.isGrounded && wheels[2].wheelCollider.isGrounded || wheels[1].wheelCollider.isGrounded && wheels[3].wheelCollider.isGrounded;
-
-            float totalWheelVelocity = 0.25f * (wheels[0].AngularVelocity + wheels[1].AngularVelocity + wheels[2].AngularVelocity + wheels[3].AngularVelocity);
-            engine.speed = totalWheelVelocity / transmission.gearRatio;
+            allWheelsStopped = !(wheels[0].isTurning && wheels[2].isTurning && wheels[1].isTurning && wheels[3].isTurning);
 
             if (!allWheelsGrounded)
             {
@@ -103,7 +125,8 @@ namespace com.braineeeeDevs.gunRun
         }
         public void Shift()
         {
-            TCEngaged = transmission.torqueConverterEngaged = !transmission.torqueConverterEngaged;
+            if (allWheelsStopped)
+                TCEngaged = transmission.torqueConverterEngaged = !transmission.torqueConverterEngaged;
         }
 
         protected float ComputeAckermannSteering(float r, bool isInner)
@@ -121,7 +144,7 @@ namespace com.braineeeeDevs.gunRun
         /// </summary>
         void ApplyRightingForce()
         {
-            rbPhysics.AddRelativeTorque( Vector3.forward * driveInput.x * rbPhysics.mass * rightingForce);
+            rbPhysics.AddRelativeTorque(Vector3.forward * driveInput.x * rbPhysics.mass * rightingForce);
         }
         void FireWeapon(Weapon target)
         {

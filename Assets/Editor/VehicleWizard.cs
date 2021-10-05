@@ -94,7 +94,7 @@ namespace com.braineeeeDevs.gunRun
                     Vector3 wheelBaseDiagonal = firstTireMade.transform.position - lastTireMade.transform.position;
                     attributes.wheelBaseLength = Vector3.ProjectOnPlane(wheelBaseDiagonal, vehicle.transform.right).magnitude;
                     attributes.wheelBaseWidth = Vector3.ProjectOnPlane(wheelBaseDiagonal, vehicle.transform.forward).magnitude;
-                    attributes.topSpeed = MathUtilities.MetricTopSpeedWithDrag(attributes.engineSpeedToGearsCurve.Evaluate(0f) * attributes.finalDrive / MathUtilities.wheelQuantity, attributes.drag);
+                    attributes.topSpeed = MathUtilities.MetricTopSpeedWithDrag(attributes.engineTorqueToGearsCurve.Evaluate(0f) * attributes.finalDrive / MathUtilities.wheelQuantity, attributes.drag);
 
                 }
             }
@@ -114,7 +114,7 @@ namespace com.braineeeeDevs.gunRun
                 vehicle.orbiter = camera.transform.parent;
                 controller.puppet = vehicle;
                 vehicle.orbiter.localRotation = camera.transform.localRotation = Quaternion.identity;
-                camera.transform.localPosition = new Vector3(0f, .75f, -6f);
+                camera.transform.localPosition = new Vector3(0f, 2f, -6f);
                 if (vehicle.traits.hudPrefab != null)
                 {
                     var hudInstance = Instantiate(vehicle.traits.hudPrefab);
@@ -131,6 +131,7 @@ namespace com.braineeeeDevs.gunRun
             {
                 DestroyImmediate(camera);
             }
+            vehicle.isPlayer = isPlayer;
             return true;
         }
         /// <summary>
@@ -197,6 +198,23 @@ namespace com.braineeeeDevs.gunRun
                     vehicle.transmission = mesh.gameObject.AddComponent<Transmission>();
                     vehicle.transmission.owner = vehicle;
                 }
+                else if (meshName.Contains("swaybar"))
+                {
+                    if (vehicle.front_swaybar == null)
+                    {
+                        vehicle.front_swaybar = mesh.gameObject.AddComponent<SwayBar>();
+                        vehicle.front_swaybar.owner = vehicle;
+                        vehicle.front_swaybar.left = vehicle.wheels[0];
+                        vehicle.front_swaybar.right = vehicle.wheels[1];
+                    }
+                    else
+                    {
+                        vehicle.rear_swaybar = mesh.gameObject.AddComponent<SwayBar>();
+                        vehicle.rear_swaybar.owner = vehicle;
+                        vehicle.rear_swaybar.left = vehicle.wheels[2];
+                        vehicle.rear_swaybar.right = vehicle.wheels[3];
+                    }
+                }
             }
         }
         /// <summary>
@@ -212,7 +230,6 @@ namespace com.braineeeeDevs.gunRun
             newWheel.mesh = mesh;
             colliderObject.name = mesh.gameObject.name + colliderObject.name;
             newWheel.wheelCollider = colliderObject.AddComponent<WheelCollider>();
-            newWheel.gameObject.AddComponent<MeshCollider>().convex = true;
             newWheel.wheelCollider.radius = GetTireSize(mesh, newWheel);
             WheelFrictionCurve friction = new WheelFrictionCurve();
             friction.extremumSlip = 0.4f;
@@ -222,7 +239,7 @@ namespace com.braineeeeDevs.gunRun
             friction.stiffness = vehicle.traits.forwardFrictionStiffness;
             newWheel.wheelCollider.suspensionDistance = vehicle.traits.suspensionDistance;
             newWheel.wheelCollider.forwardFriction = friction;
-    
+
             friction.stiffness = vehicle.traits.sideFrictionStiffness;
             newWheel.wheelCollider.sidewaysFriction = friction;
             //Set tags

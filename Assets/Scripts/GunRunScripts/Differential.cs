@@ -11,8 +11,8 @@ namespace com.braineeeeDevs.gunRun
 
         public override void Operate(float inputTorque)
         {
-            inputTorque *= 0.5f;
-            left_torque = right_torque = inputTorque;
+            
+            left_torque = right_torque = inputTorque * 0.5f;
         }
     }
 }

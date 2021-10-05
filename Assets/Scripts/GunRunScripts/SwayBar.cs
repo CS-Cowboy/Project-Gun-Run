@@ -7,7 +7,6 @@ namespace com.braineeeeDevs.gunRun
     public class SwayBar : VehicleComponent
     {
         public Wheel left, right;
-        public float force;
 
         /// <summary>
         /// Computes the swaybar force to prevent vehicle roll.
@@ -15,7 +14,10 @@ namespace com.braineeeeDevs.gunRun
         /// <returns>The anti-roll force.</returns>
         public override void Operate()
         {
-            force = owner.steeringAngle > 0f ? ComputeForce(left) - ComputeForce(right) : ComputeForce(right) - ComputeForce(left);
+            var leanLeft = ComputeForce(left) - ComputeForce(right);
+            var leanRight = ComputeForce(right) - ComputeForce(left);
+            left.antiRollForce = owner.SteeringAndDrive.x > 0f ? leanLeft : leanRight;
+            right.antiRollForce = owner.SteeringAndDrive.x > 0f ? leanRight : leanLeft;
         }
 
         protected float ComputeForce(Wheel target)
@@ -25,9 +27,9 @@ namespace com.braineeeeDevs.gunRun
             {
                 WheelHit hit = new WheelHit();
                 target.wheelCollider.GetGroundHit(out hit);
-                force = ((hit.point - target.wheelCollider.transform.position).magnitude / target.wheelCollider.suspensionDistance);
+                force = ((hit.point - target.wheelCollider.transform.position).magnitude / target.wheelCollider.suspensionDistance) ;
             }
-            return force * target.wheelCollider.sprungMass;
+            return force * owner.traits.antiRollForce;
         }
     }
 }

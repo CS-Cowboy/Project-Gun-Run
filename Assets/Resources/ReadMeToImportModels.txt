@@ -1,6 +1,4 @@
-To use the editor script VehicleWizard with a blender model:
-
-MathUtilities.wheelQuantity can be set to reflect the number of wheels you desire. Model must reflect that same quantity.
+To use the editor script VehicleWizard.cs with a blender model:
 
 a. Vehicle model must exist at the very top of the hierarchy. All other objects part of the vehicle setup must be children of this.
 b. & c. Camera orbiters must have the word "orbiter" in its name and have a camera as a child node, offset from the orbiter by some distance and facing the vehicle.
@@ -9,8 +7,8 @@ e. Each wheel must have an empty parent situated and oriented where it is to be 
 
 f. & .g & h. & i. Colliders must have the word "Collider" in their name (case does matter).
 
-j. Engine and drivetrain components must be named assembled together and appropriately named. Parented beneath the 
-MyVehicleModel you will assign an empty node with the words "drivetrain" in it.
+j. Vehicle components must be named assembled together and appropriately named. Parented beneath the 
+MyVehicleModel you will assign an empty node and named "Components", each component will have a name containing "component" and its respective purpose (ie. transmissino, engine, differential, etc.).
 
 
 
@@ -33,15 +31,9 @@ g.		>Collider_1
 h. 		>Collider_2
 i. 		>Collider_x
 
-j. 	>DriveTrain
-		>Engine
-		>Transmission
-		>Rack & Pinion
-		>Exhaust
-
-Design guidelines: 
->Drivetrain does not move locally.
->Engine powers the transmission AND vibrates with operation.
->Transmission feeds power to the wheels and  back to the engine. Operating just like a real transmission would (clutch, shifting, etc.). Rear axle has differential and propeller shaft if AWD/4WD.
->Rack & Pinion drives steering at the wheels (with steering wheels attached beneath this node)
->Exhaust gives off light smoke and vibrates with engine use and vehicle operation.
+j. 	>Components
+		>Engine_component
+		>Transmissio_componentn
+		>Rack & Pinion_component
+		>Exhaust_component
+		>Desired_component_with_existing_script

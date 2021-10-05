@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 public static class MathUtilities
-{
-    public static float horsepower2Watts = 745.7f;
+{   
+            public static float horsepower2Watts = 745.7f;  
+    public static float hpToNM = 5252f;
     public const uint wheelQuantity = 4;
     public static float metersPerSecToKPH = 3600f * 0.001f;
 
