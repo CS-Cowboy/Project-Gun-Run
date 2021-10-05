@@ -3,7 +3,6 @@ using UnityEngine;
 namespace com.braineeeeDevs.gunRun
 {
     [RequireComponent(typeof(Camera))]
-
     [RequireComponent(typeof(Calculus))]
     [RequireComponent(typeof(Calculus))]
     /// <summary>
@@ -55,9 +54,9 @@ namespace com.braineeeeDevs.gunRun
         /// <param name="lookDelta">The change in the camera's orientation.</param>      
         protected void RotateCamera(Vector3 lookDelta)
         {
-            lookDelta *= Time.fixedDeltaTime;
+
             var thetaV = Mathf.Clamp(orbiterRotation.x - lookDelta.y, lower, upper);
-            orbiter.rotation = Quaternion.Euler(thetaV, orbiterRotation.y + lookDelta.x, 0f);
+            orbiter.rotation = Quaternion.Euler(thetaV, orbiterRotation.y - lookDelta.x, 0f);
         }
         /// <summary>
         /// Moves the camera. Prevents it from clipping through objects behind it. Only translates if the player controls puppet is null.
@@ -83,18 +82,20 @@ namespace com.braineeeeDevs.gunRun
                 playerCamera.transform.position = hit.point + orbiter.forward;
             }
         }
-        protected void FixedUpdate()
 
+        protected void FixedUpdate()
         {
             cameraPhysics.Compute(playerControls.drive_and_steering);
             mousePhysics.Compute(playerControls.mousePosition);
         }
         protected void LateUpdate()
         {
-            var lookPhysics = mousePhysics.Velocity * lookSpeed + mousePhysics.Acceleration * lookAcceleration;
-            var movePhysics = cameraPhysics.Position + cameraPhysics.Velocity * camSpeed + cameraPhysics.Acceleration * camAcceleration;
-            RotateCamera(lookPhysics);
-            TranslateCamera(movePhysics, mousePhysics.Position.z);
+
+            Vector3 lookPhysics = (mousePhysics.ThreeSpacePosition + mousePhysics.ThreeSpaceVelocity * lookSpeed + mousePhysics.ThreeSpaceAcceleration * lookAcceleration);
+            Vector2 movePhysics = (cameraPhysics.TwoSpacePosition + cameraPhysics.TwoSpaceVelocity * camSpeed + cameraPhysics.TwoSpaceAcceleration * camAcceleration);
+            RotateCamera(lookPhysics * Time.fixedDeltaTime);
+            TranslateCamera(movePhysics, lookPhysics.z);
+
         }
 
     }

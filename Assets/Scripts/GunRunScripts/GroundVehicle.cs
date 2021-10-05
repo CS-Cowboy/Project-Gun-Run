@@ -8,10 +8,11 @@ namespace com.braineeeeDevs.gunRun
     [RequireComponent(typeof(Calculus))]
     public class GroundVehicle : BasicObject, IPublish, ITakeDamage
     {
+        public bool isPlayer = false;
         protected float damagePoints;
         public Wheel[] wheels = new Wheel[MathUtilities.wheelQuantity];
         public Transform orbiter;
-        public float steeringAngle = 0f, rightingForce = 3f;
+        public float steeringAngle = 0f, rightingForce = 20000f;
         public bool applyingBrakes = true, TCEngaged = false, allWheelsGrounded = false;
         protected Vector3 driveInput;
         public Calculus vehicleCalculus;
@@ -45,6 +46,20 @@ namespace com.braineeeeDevs.gunRun
             }
         }
 
+        public Vector3 AngularVelocity
+        {
+            get
+            {
+                return (vehicleCalculus.ThreeSpaceVelocity);
+            }
+        }
+        public Vector3 AngularAcceleration
+        {
+            get
+            {
+                return (vehicleCalculus.ThreeSpaceAcceleration);
+            }
+        }
         public void Awake()
         {
             vehicleCalculus = GetComponent<Calculus>();
@@ -53,22 +68,13 @@ namespace com.braineeeeDevs.gunRun
         {
             base.Start();
             damagePoints = 0f;
-
-            if (CameraController.playerControls != null && CameraController.playerControls.puppet != null)
+            if (isPlayer)
             {
                 CameraController.AttachTo(this);
             }
-            else
-            {
-                CameraController.AttachTo(null);
-            }
-
         }
         void FixedUpdate()
         {
-            /*currentGearRatio = traits.gearVsEngineSpeedCurve.Evaluate(groundSpeedInKPH);
-            wheelTorque = (currentGearRatio * traits.finalDrive * driveInput.y * engineSpeedInRadsPerSec) / MathUtilities.wheelQuantity;
-            */
             vehicleCalculus.Compute(transform.position);
             engine.Operate(driveInput.y);
             transmission.Operate(engine.speed);
@@ -76,8 +82,8 @@ namespace com.braineeeeDevs.gunRun
             rear_differential.Operate(transmission.outputTorque * 0.5f);
 
             float radius = wheels[0].wheelCollider.radius;
-            wheels[0].SteerAngle = SteeringAndDrive.x > 0f ? ComputeAckermannSteering(radius, false) : ComputeAckermannSteering(radius, true) ;
-            wheels[1].SteerAngle = SteeringAndDrive.x > 0f ? ComputeAckermannSteering(radius, false) : ComputeAckermannSteering(radius, true) ;
+            wheels[0].SteerAngle = SteeringAndDrive.x > 0f ? ComputeAckermannSteering(radius, false) : ComputeAckermannSteering(radius, true);
+            wheels[1].SteerAngle = SteeringAndDrive.x > 0f ? ComputeAckermannSteering(radius, false) : ComputeAckermannSteering(radius, true);
 
 
             wheels[0].Operate(front_differential.left_torque);
@@ -85,12 +91,12 @@ namespace com.braineeeeDevs.gunRun
             wheels[2].Operate(rear_differential.left_torque);
             wheels[3].Operate(rear_differential.right_torque);
 
-            allWheelsGrounded = wheels[0].wheelCollider.isGrounded && wheels[1].wheelCollider.isGrounded && wheels[2].wheelCollider.isGrounded && wheels[3].wheelCollider.isGrounded;
+            allWheelsGrounded = wheels[0].wheelCollider.isGrounded && wheels[2].wheelCollider.isGrounded || wheels[1].wheelCollider.isGrounded && wheels[3].wheelCollider.isGrounded;
 
-            float totalWheelVelocity = 0.25f * (wheels[0].wheelCalculus.Velocity.magnitude +  wheels[1].wheelCalculus.Velocity.magnitude +  wheels[2].wheelCalculus.Velocity.magnitude +  wheels[3].wheelCalculus.Velocity.magnitude); 
+            float totalWheelVelocity = 0.25f * (wheels[0].AngularVelocity + wheels[1].AngularVelocity + wheels[2].AngularVelocity + wheels[3].AngularVelocity);
             engine.speed = totalWheelVelocity / transmission.gearRatio;
 
-            if (allWheelsGrounded)
+            if (!allWheelsGrounded)
             {
                 ApplyRightingForce();
             }
@@ -105,7 +111,7 @@ namespace com.braineeeeDevs.gunRun
             var val = 0f;
             if (isInner)
             {
-                val = Mathf.Atan(traits.wheelBaseLength * SteeringAndDrive.x / (traits.turnRadius  - (traits.wheelBaseWidth * 0.5f)));
+                val = Mathf.Atan(traits.wheelBaseLength * SteeringAndDrive.x / (traits.turnRadius - (traits.wheelBaseWidth * 0.5f)));
             }
             val = Mathf.Atan(traits.wheelBaseLength * SteeringAndDrive.x / (traits.turnRadius + (traits.wheelBaseWidth * 0.5f)));
             return val * Mathf.Rad2Deg;
@@ -115,7 +121,7 @@ namespace com.braineeeeDevs.gunRun
         /// </summary>
         void ApplyRightingForce()
         {
-            rbPhysics.AddRelativeTorque(-1f * Vector3.forward * driveInput.x * rbPhysics.mass * rightingForce);
+            rbPhysics.AddRelativeTorque( Vector3.forward * driveInput.x * rbPhysics.mass * rightingForce);
         }
         void FireWeapon(Weapon target)
         {

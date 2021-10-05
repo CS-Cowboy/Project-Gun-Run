@@ -30,7 +30,7 @@ namespace com.braineeeeDevs.gunRun
             applyBrakes = Input.GetAxisRaw("Jump") > 0f;
             toggleDriveState = applyBrakes && Input.GetAxisRaw("DriveShifter") > 0f;
             drive_and_steering = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0f);
-            mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.GetAxisRaw("Mouse ScrollWheel"));
+            mousePosition = new Vector3(Input.mousePosition.x - Screen.width * 0.5f, Input.mousePosition.y - Screen.height * 0.5f, Input.GetAxisRaw("Mouse ScrollWheel"));
         }
         /// <summary>
         /// Applies the input to the vehicle under control.
@@ -43,6 +43,7 @@ namespace com.braineeeeDevs.gunRun
             {
                 puppet.Shift();
             }
+            
         }
 
         private void Update()

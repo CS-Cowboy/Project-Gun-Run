@@ -42,7 +42,7 @@ namespace com.braineeeeDevs.gunRun
         }
         public void UpdateSpeedometer()
         {
-            speedometer.value = (float)CameraController.playerControls.puppet.vehicleCalculus.Velocity.magnitude;
+            speedometer.value = (float)CameraController.playerControls.puppet.RBPhysics.velocity.magnitude;
         }
         public void Update()
         {

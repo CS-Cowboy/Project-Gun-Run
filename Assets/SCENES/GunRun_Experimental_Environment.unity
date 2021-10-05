@@ -187,36 +187,6 @@ Transform:
   m_Father: {fileID: 1798518228}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &68872821
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 68872822}
-  m_Layer: 0
-  m_Name: Camera
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &68872822
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 68872821}
-  m_LocalRotation: {x: -0.70710695, y: -0.00000086426735, z: -0.0000008940697, w: 0.7071066}
-  m_LocalPosition: {x: 0.34372103, y: -38.064987, z: -0.36661744}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 543186582}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &72187704
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,7 +305,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 87324578}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: -6}
+  m_LocalPosition: {x: 0, y: 3, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 919658574}
@@ -357,12 +327,12 @@ MonoBehaviour:
   lower: 5
   upper: 70
   lookSpeed: 10
-  lookAcceleration: 5
+  lookAcceleration: 2
   camAcceleration: 2
   camSpeed: 2
-  zoomSpeed: 20
+  zoomSpeed: 4
   innerZoomLimit: 5
-  outerZoomLimit: 20
+  outerZoomLimit: 30
   upperCamSpeedLimit: 100
 --- !u!114 &87324581
 MonoBehaviour:
@@ -1219,6 +1189,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   traits: {fileID: 11400000, guid: f97233612d7a70d45b273301f2f1c2cd, type: 2}
+  isPlayer: 1
   wheels:
   - {fileID: 1954639072}
   - {fileID: 1812241432}
@@ -1227,8 +1198,9 @@ MonoBehaviour:
   orbiter: {fileID: 1634282458}
   steeringAngle: 0
   rightingForce: 1.5
-  wheelsOnGround: 0
   applyingBrakes: 0
+  TCEngaged: 0
+  allWheelsGrounded: 0
   vehicleCalculus: {fileID: 489582463}
   engine: {fileID: 1072936128}
   transmission: {fileID: 235634320}
@@ -1334,8 +1306,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 489582459}
-  m_LocalRotation: {x: 0.000000008363819, y: -0.9238794, z: -0.000000020192026, w: 0.38268375}
-  m_LocalPosition: {x: 7.67, y: 1.52, z: 23.9}
+  m_LocalRotation: {x: 0.000000015454313, y: -0.70710677, z: -0.00000001545431, w: 0.7071069}
+  m_LocalPosition: {x: 26.54, y: 1.62, z: 4.95}
   m_LocalScale: {x: 1, y: 1, z: 1.0077219}
   m_Children:
   - {fileID: 1798518228}
@@ -1344,7 +1316,7 @@ Transform:
   - {fileID: 1250993817}
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: -135, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &526033842
 GameObject:
   m_ObjectHideFlags: 0
@@ -1446,8 +1418,7 @@ Transform:
   m_LocalRotation: {x: 0.7071068, y: 0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: -0, y: -0.0000001209758, z: 0}
   m_LocalScale: {x: 1, y: 0.9923373, z: 1}
-  m_Children:
-  - {fileID: 68872822}
+  m_Children: []
   m_Father: {fileID: 1509175443}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2593,7 +2564,7 @@ GameObject:
   - component: {fileID: 1509175438}
   - component: {fileID: 1509175437}
   m_Layer: 0
-  m_Name: Ford-f-150(Clone)
+  m_Name: Ford-f-150(Clone) [NPC]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2612,6 +2583,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   traits: {fileID: 11400000, guid: f97233612d7a70d45b273301f2f1c2cd, type: 2}
+  isPlayer: 0
   wheels:
   - {fileID: 273016347}
   - {fileID: 1683115029}
@@ -2620,8 +2592,9 @@ MonoBehaviour:
   orbiter: {fileID: 543186582}
   steeringAngle: 0
   rightingForce: 3
-  wheelsOnGround: 0
   applyingBrakes: 1
+  TCEngaged: 0
+  allWheelsGrounded: 0
   vehicleCalculus: {fileID: 0}
   engine: {fileID: 1066516847}
   transmission: {fileID: 112817455}

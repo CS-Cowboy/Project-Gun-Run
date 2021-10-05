@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8628dfc49d9ae9488de0bee3488f734, type: 3}
   m_Name: ModernTruck
   m_EditorClassIdentifier: 
-  topSpeed: 1424107.4
+  topSpeed: 199
+  brakingForce: 2000
   finalDrive: 5.04
   suspensionDistance: 0.1
   forwardFrictionStiffness: 1.25
@@ -43,8 +44,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.04890739
     - serializedVersion: 3
-      time: 7992.497
-      value: 0.29852718
+      time: 15655.723
+      value: 0.20999569
       inSlope: 0
       outSlope: 0
       tangentMode: 0
