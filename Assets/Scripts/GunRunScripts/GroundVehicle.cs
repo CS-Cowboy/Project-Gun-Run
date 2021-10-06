@@ -9,6 +9,7 @@ namespace com.braineeeeDevs.gunRun
     public class GroundVehicle : BasicObject, IPublish, ITakeDamage
     {
         public bool isPlayer = false;
+        protected uint lampLevel = 0, prevLampLevel = 0;
         protected float damagePoints;
         public Wheel[] wheels = new Wheel[MathUtilities.wheelQuantity];
         public Transform orbiter;
@@ -20,6 +21,7 @@ namespace com.braineeeeDevs.gunRun
         public Transmission transmission;
         public Differential front_differential, rear_differential;
         public SwayBar front_swaybar, rear_swaybar;
+        public Light[] headlight, foglight;
         /// <summary>
         /// The physics simulator component.
         /// </summary>
@@ -75,6 +77,7 @@ namespace com.braineeeeDevs.gunRun
             }
             TCEngaged = transmission.torqueConverterEngaged;
         }
+
         void FixedUpdate()
         {
             vehicleCalculus.Compute(transform.position);
@@ -99,7 +102,7 @@ namespace com.braineeeeDevs.gunRun
 
                 wheels[2].Operate(0f);
                 wheels[3].Operate(0f);
-                
+
                 wheels[0].ApplyBrake();
                 wheels[1].ApplyBrake();
 
@@ -122,6 +125,17 @@ namespace com.braineeeeDevs.gunRun
             {
                 ApplyRightingForce();
             }
+        }
+        public void ToggleHeadLamps()
+        {
+            headlight[0].enabled = headlight[1].enabled = !(headlight[0].enabled && headlight[1].enabled);
+            foglight[0].enabled = foglight[1].enabled = false;
+
+        }
+        public void ToggleHighBeams()
+        {
+            headlight[0].enabled = headlight[1].enabled = true;
+            foglight[0].enabled = foglight[1].enabled = !(foglight[0].enabled && foglight[1].enabled);
         }
         public void Shift()
         {

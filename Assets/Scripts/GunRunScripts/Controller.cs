@@ -13,7 +13,7 @@ namespace com.braineeeeDevs.gunRun
     {
         public GroundVehicle puppet;
         public Vector3 mousePosition, drive_and_steering;
-        protected bool applyBrakes, toggleDriveState = false;
+        protected bool applyBrakes, toggleDriveState = false, toggleLights = false, toggleFogLights = false;
         /// <summary>
         /// Sets the vehicle under control.
         /// </summary>
@@ -28,6 +28,8 @@ namespace com.braineeeeDevs.gunRun
         public void GetInputs()
         {
             applyBrakes = Input.GetAxisRaw("Jump") > 0f;
+            toggleLights = Input.GetAxisRaw("Headlights") > 0f;
+            toggleFogLights = Input.GetAxisRaw("Foglights") > 0f;
             toggleDriveState = Input.GetAxisRaw("DriveShifter") > 0f;
             drive_and_steering = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0f);
             mousePosition = new Vector3(Input.mousePosition.x - Screen.width * 0.5f, Input.mousePosition.y - Screen.height * 0.5f, Input.GetAxisRaw("Mouse ScrollWheel"));
@@ -43,7 +45,14 @@ namespace com.braineeeeDevs.gunRun
             {
                 puppet.Shift();
             }
-            
+            if (toggleLights)
+            {
+                puppet.ToggleHeadLamps();
+            }
+            if (toggleFogLights)
+            {
+                puppet.ToggleHighBeams();
+            }
         }
 
         private void LateUpdate()

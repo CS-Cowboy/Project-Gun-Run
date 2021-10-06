@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   topSpeed: 199
   brakingForce: 2000
+  headlampRange: 20
+  headlampAngle: 16
+  foglampRange: 40
+  foglampAngle: 20
   horsePower: 500
   finalDrive: 5.04
   suspensionDistance: 0.1
@@ -21,17 +25,20 @@ MonoBehaviour:
   sideFrictionStiffness: 1.15
   wheelMassInKg: 20
   tachometerLimitInRPM: 6000
-  massInKg: 500
+  massInKg: 1817
   drag: 0.2
   fireDelayTime: 0
   reloadDelayTime: 0
   wheelBaseLength: 3.9079201
   wheelBaseWidth: 1.8084781
   turnRadius: 8
-  antiRollForce: 454
+  antiRollForce: 227
   hasAWD: 0
   totalWheelCount: 4
   hudPrefab: {fileID: 772892077814719115, guid: b053cd9c37cb6164497474a47549e851, type: 3}
+  desiredSlip: 0.5
+  betaControlParam: 2
+  kControlParam: 2
   engineTorqueToGearsCurve:
     serializedVersion: 2
     m_Curve:

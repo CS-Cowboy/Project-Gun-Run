@@ -87,6 +87,39 @@ namespace com.braineeeeDevs.gunRun
                         componentMeshes.Add(mesh);
                     }
                 }
+
+                vehicle.foglight = new Light[2];
+                vehicle.headlight = new Light[2];
+                foreach (Transform t in newVehicle.GetComponentsInChildren<Transform>())
+                {
+                    string transformName = t.name.ToLower();
+                    if (transformName.Contains("component"))
+                    {
+                        if (transformName.Contains("headlamp"))
+                        {
+                            if (vehicle.headlight[0] == null)
+                            {
+                                vehicle.headlight[0] = BuildLight(t.gameObject, false);
+                            }
+                            else if (vehicle.headlight[1] == null)
+                            {
+                                vehicle.headlight[0] = BuildLight(t.gameObject, false);
+                            }
+
+                        }
+                        else if (transformName.Contains("foglamp"))
+                        {
+                            if (vehicle.foglight[0] == null)
+                            {
+                                vehicle.foglight[0] = BuildLight(t.gameObject, true);
+                            }
+                            else if (vehicle.foglight[1] == null)
+                            {
+                                vehicle.foglight[1] = BuildLight(t.gameObject, true);
+                            }
+                        }
+                    }
+                }
                 if (BuildWheels(wheelMeshes))
                 {
                     BuildComponents(componentMeshes);
@@ -109,6 +142,10 @@ namespace com.braineeeeDevs.gunRun
 
             if (isPlayer)
             {
+                camera.usePhysicalProperties = false;
+                camera.fieldOfView = 60f;
+                camera.nearClipPlane = 0f;
+                camera.farClipPlane = 10000f;
                 var controller = camera.gameObject.AddComponent<Controller>();
                 var cameraControls = camera.gameObject.AddComponent<CameraController>();
                 vehicle.orbiter = camera.transform.parent;
@@ -216,6 +253,23 @@ namespace com.braineeeeDevs.gunRun
                     }
                 }
             }
+        }
+        protected Light BuildLight(GameObject obj, bool isFogLamp)
+        {
+            var lamp = obj.AddComponent<Light>();
+            if (!isFogLamp)
+            {
+                lamp.range = vehicle.traits.headlampRange;
+                lamp.spotAngle = vehicle.traits.headlampAngle;
+            }
+            else
+            {
+                lamp.range = vehicle.traits.foglampRange;
+                lamp.spotAngle = vehicle.traits.foglampAngle;
+            }
+            lamp.lightmapBakeType = LightmapBakeType.Mixed;
+            lamp.renderMode = LightRenderMode.Auto;
+            return lamp;
         }
         /// <summary>
         /// Builds an individual wheel.

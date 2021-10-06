@@ -14,7 +14,7 @@ namespace com.braineeeeDevs.gunRun
         public WheelCollider wheelCollider;
         public MeshRenderer mesh;
         public Calculus wheelCalculus, slipCalculus;
-        public float linearSlip, tireDiameterInMeters, inertia, nonLinearSlip, antiRollForce = 1f;
+        public float slip, tireDiameterInMeters, inertia, drivingForce, antiRollForce = 1f, adjustedTorque;
         public uint wheelNumber = 0;
         public bool isTurning = false;
         public float AngularVelocity
@@ -64,12 +64,11 @@ namespace com.braineeeeDevs.gunRun
         {
             if (owner != null && wheelCollider != null)
             {
-                wheelCollider.motorTorque = inputTorque;
-                wheelCollider.brakeTorque =0f;
-                ComputeSlip(inputTorque);
+                adjustedTorque = ComputeSlip(inputTorque);
+                wheelCollider.motorTorque = adjustedTorque;
+                wheelCollider.brakeTorque = 0f;
                 ApplyPose();
                 wheelCalculus.Compute(mesh.transform.localEulerAngles.z * Mathf.Deg2Rad);
-                slipCalculus.Compute(linearSlip);
                 owner.RBPhysics.AddForceAtPosition(Vector3.up * -antiRollForce, transform.parent.position);
                 isTurning = Mathf.Abs(AngularVelocity) >= 1f;
                 Debug.Log(wheelCalculus.Velocity);
@@ -86,11 +85,12 @@ namespace com.braineeeeDevs.gunRun
         {
             var rOmega = Mathf.Clamp(AngularVelocity * wheelCollider.radius, wheelCollider.radius, owner.traits.topSpeed * wheelCollider.radius);
             inertia = Mathf.Clamp(AngularVelocity, 1f, owner.traits.topSpeed) * Mathf.Pow(wheelCollider.radius, 2f) * wheelCollider.mass;
-            linearSlip = (rOmega - owner.RBPhysics.velocity.magnitude) / rOmega;
-            nonLinearSlip = slipCalculus.Velocity;
-
+            slip = (rOmega - owner.RBPhysics.velocity.magnitude) / rOmega;
+            var a = (owner.Acceleration.magnitude / Mathf.Clamp(owner.Velocity.magnitude, 1f, float.MaxValue)) * (slip - 1f);
+            var b = (owner.Velocity.magnitude / (inertia * wheelCollider.radius * Mathf.Clamp(Mathf.Pow(wheelCalculus.Velocity, 2f), 1f, float.MaxValue))) * (inputTorque - wheelCollider.radius * (drivingForce));
+            drivingForce = a + b;
             //  Debug.Log(string.Format("NonLinearSlip for wheel {0}:=>> {1} ", wheelNumber, nonLinearSlip));
-            return nonLinearSlip;
+            return inputTorque;
         }
 
         /// <summary>
