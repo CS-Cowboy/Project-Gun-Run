@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-namespace com.braineeeeDevs.gunRun
+namespace com.braineeeeDevs.gr
 {
     /*Tests player and vehicle*/
     public class TestVehicleAndCamera
@@ -34,7 +34,7 @@ namespace com.braineeeeDevs.gunRun
         [Test]
         public void TestGroundVehicleTraitsIsNotNull()
         {
-            Assert.NotNull(grndVehicle.traits);
+            Assert.NotNull(grndVehicle.vehicleTraits);
 
         }
         [Test]

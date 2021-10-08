@@ -49,8 +49,11 @@
      <Compile Include="Assets\Scripts\GunRunScripts\IPublish.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Character.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\GroundVehicle.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\ObjectPool.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\PlayerHUD.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Transmission.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\PoolController.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\CameraSettings.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\IRespawn.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\VehicleComponent.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Inventory.cs" />
@@ -62,6 +65,7 @@
      <Compile Include="Assets\Scripts\GunRunScripts\IShoot.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Differential.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\IPlayEffects.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\VehicleTraits.cs" />
      <None Include="Assets\Scripts\GunRunScripts\GunRunPlaymode.asmdef" />
     <Reference Include="UnityEngine">
         <HintPath>C:\Program Files\Unity\Hub\Editor\2021.1.22f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>

@@ -12,54 +12,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8628dfc49d9ae9488de0bee3488f734, type: 3}
   m_Name: ModernTruck
   m_EditorClassIdentifier: 
-  topSpeed: 199
-  brakingForce: 2000
+  topSpeedInKPH: 129
+  brakingForce: 3000
   headlampRange: 20
   headlampAngle: 16
-  foglampRange: 40
-  foglampAngle: 20
-  horsePower: 500
-  finalDrive: 5.04
+  highBeamRange: 40
+  highBeamSpotAngle: 40
+  foglampRange: 30
+  foglampAngle: 50
+  enginePower: 372.85
+  finalDrive: 3.04
   suspensionDistance: 0.1
   forwardFrictionStiffness: 1.25
   sideFrictionStiffness: 1.15
   wheelMassInKg: 20
-  tachometerLimitInRPM: 6000
-  massInKg: 1817
+  tachometerLimit: 4000
+  vehicleMass: 1817
   drag: 0.2
   fireDelayTime: 0
   reloadDelayTime: 0
   wheelBaseLength: 3.9079201
   wheelBaseWidth: 1.8084781
-  turnRadius: 8
-  antiRollForce: 227
-  hasAWD: 0
+  turnRadius: 17
+  antiRollForce: 396.89325
   totalWheelCount: 4
   hudPrefab: {fileID: 772892077814719115, guid: b053cd9c37cb6164497474a47549e851, type: 3}
-  desiredSlip: 0.5
-  betaControlParam: 2
-  kControlParam: 2
-  engineTorqueToGearsCurve:
+  idleSpeed: 200
+  engineSpeedToTorqueGearCurve:
     serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 1.0494255
-      value: 1.3875486
-      inSlope: 0.0052508567
-      outSlope: 0.0052508567
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.3668947
-    - serializedVersion: 3
-      time: 496.7862
-      value: 1.0291388
-      inSlope: -0.0032877666
-      outSlope: -0.0032877666
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.117480956
-      outWeight: 0
+    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  gearTorques:
+  - 6465
+  - 2155
+  - 1293
+  - 809
+  gearSet:
+  - 2.84
+  - 1.55
+  - 1
+  - 0.7

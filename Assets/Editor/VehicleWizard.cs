@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-namespace com.braineeeeDevs.gunRun
+namespace com.braineeeeDevs.gr
 {
     /// <summary>
     /// A class for importing vehicle models to functioning gameObject status; using the rules given in the "ReadMeToImportModels" guide in this project.
@@ -17,9 +17,8 @@ namespace com.braineeeeDevs.gunRun
         protected Wheel latestTire;
         private GameObject newVehicle;
         private GroundVehicle vehicle;
-        public ObjectAttributes attributes;
+        public VehicleTraits attributes;
         private Wheel firstTireMade, lastTireMade;
-
         private Transform colliderChassis;
         static string wheelTag = "Wheel", colliderTag = "Collider";
         /// <summary>
@@ -60,7 +59,7 @@ namespace com.braineeeeDevs.gunRun
         protected void RigVehicle()
         {
             vehicle = newVehicle.AddComponent<GroundVehicle>();
-            vehicle.traits = attributes;
+            vehicle.vehicleTraits = attributes;
 
             if (this.BuildPlayer())
             {
@@ -127,7 +126,7 @@ namespace com.braineeeeDevs.gunRun
                     Vector3 wheelBaseDiagonal = firstTireMade.transform.position - lastTireMade.transform.position;
                     attributes.wheelBaseLength = Vector3.ProjectOnPlane(wheelBaseDiagonal, vehicle.transform.right).magnitude;
                     attributes.wheelBaseWidth = Vector3.ProjectOnPlane(wheelBaseDiagonal, vehicle.transform.forward).magnitude;
-                    attributes.topSpeed = MathUtilities.MetricTopSpeedWithDrag(attributes.engineTorqueToGearsCurve.Evaluate(0f) * attributes.finalDrive / MathUtilities.wheelQuantity, attributes.drag);
+                    attributes.topSpeed = MathUtilities.MetricTopSpeedWithDrag(attributes.engineSpeedToTorqueGearCurve.Evaluate(0f) * attributes.finalDrive / MathUtilities.wheelQuantity, attributes.drag);
 
                 }
             }
@@ -152,9 +151,9 @@ namespace com.braineeeeDevs.gunRun
                 controller.puppet = vehicle;
                 vehicle.orbiter.localRotation = camera.transform.localRotation = Quaternion.identity;
                 camera.transform.localPosition = new Vector3(0f, 2f, -6f);
-                if (vehicle.traits.hudPrefab != null)
+                if (vehicle.vehicleTraits.hudPrefab != null)
                 {
-                    var hudInstance = Instantiate(vehicle.traits.hudPrefab);
+                    var hudInstance = Instantiate(vehicle.vehicleTraits.hudPrefab);
                     hudInstance.transform.SetParent(camera.transform);
                 }
                 else
@@ -259,13 +258,13 @@ namespace com.braineeeeDevs.gunRun
             var lamp = obj.AddComponent<Light>();
             if (!isFogLamp)
             {
-                lamp.range = vehicle.traits.headlampRange;
-                lamp.spotAngle = vehicle.traits.headlampAngle;
+                lamp.range = vehicle.vehicleTraits.headlampRange;
+                lamp.spotAngle = vehicle.vehicleTraits.headlampAngle;
             }
             else
             {
-                lamp.range = vehicle.traits.foglampRange;
-                lamp.spotAngle = vehicle.traits.foglampAngle;
+                lamp.range = vehicle.vehicleTraits.foglampRange;
+                lamp.spotAngle = vehicle.vehicleTraits.foglampAngle;
             }
             lamp.lightmapBakeType = LightmapBakeType.Mixed;
             lamp.renderMode = LightRenderMode.Auto;
@@ -290,11 +289,11 @@ namespace com.braineeeeDevs.gunRun
             friction.extremumValue = 1f;
             friction.asymptoteSlip = 0.8f;
             friction.asymptoteValue = 0.5f;
-            friction.stiffness = vehicle.traits.forwardFrictionStiffness;
-            newWheel.wheelCollider.suspensionDistance = vehicle.traits.suspensionDistance;
+            friction.stiffness = vehicle.vehicleTraits.forwardFrictionStiffness;
+            newWheel.wheelCollider.suspensionDistance = vehicle.vehicleTraits.suspensionDistance;
             newWheel.wheelCollider.forwardFriction = friction;
 
-            friction.stiffness = vehicle.traits.sideFrictionStiffness;
+            friction.stiffness = vehicle.vehicleTraits.sideFrictionStiffness;
             newWheel.wheelCollider.sidewaysFriction = friction;
             //Set tags
             newWheel.wheelCollider.tag = colliderTag;

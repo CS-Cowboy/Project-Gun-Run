@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace com.braineeeeDevs.gunRun
+namespace com.braineeeeDevs.gr
 {
     /// <summary>
     /// A four wheel vehicle to drive.
@@ -9,8 +9,9 @@ namespace com.braineeeeDevs.gunRun
     public class GroundVehicle : BasicObject, IPublish, ITakeDamage
     {
         public bool isPlayer = false;
+        public VehicleTraits vehicleTraits;
         protected uint lampLevel = 0, prevLampLevel = 0;
-        protected float damagePoints;
+        protected float damagePoints, whlVel;
         public Wheel[] wheels = new Wheel[MathUtilities.wheelQuantity];
         public Transform orbiter;
         public float rightingForce = 3f;
@@ -23,7 +24,7 @@ namespace com.braineeeeDevs.gunRun
         public SwayBar front_swaybar, rear_swaybar;
         public Light[] headlight, foglight;
         /// <summary>
-        /// The physics simulator component.
+        /// The physics simulating component.
         /// </summary>
         /// <value>A rigidbody belonging to the vehicle gameObject.</value>
         public Rigidbody RBPhysics
@@ -36,7 +37,7 @@ namespace com.braineeeeDevs.gunRun
         /// <summary>
         /// The steering (x) and drive (z) inputs.
         /// </summary>
-        /// <value>X component is used in steering while the Z component is used in drive direction.</value>
+        /// <value>X component is used in steering while the Y component is used in drive direction.</value>
         public Vector2 SteeringAndDrive
         {
             set
@@ -48,19 +49,36 @@ namespace com.braineeeeDevs.gunRun
                 return driveInput;
             }
         }
-
+        /// <summary>
+        /// The velocity of the vehicle in world space.
+        /// </summary>
+        /// <value>A Vector3 containing the vehicle's Velocity.</value>        
         public Vector3 Velocity
         {
             get
             {
                 return (vehicleCalculus.ThreeSpaceVelocity);
             }
+
         }
+        /// <summary>
+        /// The Acceleration of the vehicle in world space.
+        /// </summary>
+        /// <value>A Vector3 containing the vehicle's Acceleration.</value>        
         public Vector3 Acceleration
         {
             get
             {
                 return (vehicleCalculus.ThreeSpaceAcceleration);
+            }
+        }
+
+        public float WheelVelocity
+        {
+            get
+            {
+                Debug.Log(string.Format("Wheel Velocity ->{0} ", whlVel));
+                return whlVel;
             }
         }
         public void Awake()
@@ -77,11 +95,13 @@ namespace com.braineeeeDevs.gunRun
             }
             TCEngaged = transmission.torqueConverterEngaged;
         }
-
+        /// <summary>
+        /// Drives all the vehicle's physical operations in the Physics timestep.
+        /// </summary>
         void FixedUpdate()
         {
             vehicleCalculus.Compute(transform.position);
-            engine.Operate(driveInput.y);
+            engine.Operate(MathUtilities.GetSpeedFrom(Mathf.Abs(transmission.outputTorque), vehicleTraits.enginePower));
             transmission.Operate(engine.speed);
 
             front_differential.Operate(transmission.outputTorque * 0.5f);
@@ -94,6 +114,7 @@ namespace com.braineeeeDevs.gunRun
             wheels[0].SteerAngle = SteeringAndDrive.x > 0f ? ComputeAckermannSteering(radius, false) : ComputeAckermannSteering(radius, true);
             wheels[1].SteerAngle = SteeringAndDrive.x > 0f ? ComputeAckermannSteering(radius, false) : ComputeAckermannSteering(radius, true);
 
+            whlVel = Mathf.Abs(0.25f * (wheels[0].AngularVelocity + wheels[1].AngularVelocity + wheels[2].AngularVelocity + wheels[3].AngularVelocity));
 
             if (applyingBrakes)
             {
@@ -126,21 +147,48 @@ namespace com.braineeeeDevs.gunRun
                 ApplyRightingForce();
             }
         }
+        /// <summary>
+        /// Toggles the headlights on or off.
+        /// </summary>
         public void ToggleHeadLamps()
         {
             headlight[0].enabled = headlight[1].enabled = !(headlight[0].enabled && headlight[1].enabled);
             foglight[0].enabled = foglight[1].enabled = false;
-
+            ToggleHighBeams(headlight[0].enabled && headlight[1].enabled);
         }
-        public void ToggleHighBeams()
+
+        public void ToggleHighBeams(bool usingHeadLamps)
+        {
+            if (usingHeadLamps)
+            {
+                headlight[0].range = headlight[1].range = vehicleTraits.highBeamRange;
+                headlight[0].spotAngle = headlight[1].spotAngle = vehicleTraits.highBeamSpotAngle;
+            }
+            else
+            {
+                headlight[0].range = headlight[1].range = vehicleTraits.headlampRange;
+                headlight[0].spotAngle = headlight[1].spotAngle = vehicleTraits.headlampAngle;
+            }
+        }
+        /// <summary>
+        /// Toggles the headlights and the fog lights on or off.
+        /// </summary>
+        public void ToggleFogLamps()
         {
             headlight[0].enabled = headlight[1].enabled = true;
             foglight[0].enabled = foglight[1].enabled = !(foglight[0].enabled && foglight[1].enabled);
         }
-        public void Shift()
+        public void ShiftDrive()
         {
             if (allWheelsStopped)
                 TCEngaged = transmission.torqueConverterEngaged = !transmission.torqueConverterEngaged;
+        }
+        public void ShiftDriveMode()
+        {
+            if (allWheelsStopped)
+            {
+                transmission.ToggleShift();
+            }
         }
 
         protected float ComputeAckermannSteering(float r, bool isInner)
@@ -148,9 +196,9 @@ namespace com.braineeeeDevs.gunRun
             var val = 0f;
             if (isInner)
             {
-                val = Mathf.Atan(traits.wheelBaseLength * SteeringAndDrive.x / (traits.turnRadius - (traits.wheelBaseWidth * 0.5f)));
+                val = Mathf.Atan(vehicleTraits.wheelBaseLength * SteeringAndDrive.x / (vehicleTraits.turnRadius - (vehicleTraits.wheelBaseWidth * 0.5f)));
             }
-            val = Mathf.Atan(traits.wheelBaseLength * SteeringAndDrive.x / (traits.turnRadius + (traits.wheelBaseWidth * 0.5f)));
+            val = Mathf.Atan(vehicleTraits.wheelBaseLength * SteeringAndDrive.x / (vehicleTraits.turnRadius + (vehicleTraits.wheelBaseWidth * 0.5f)));
             return val * Mathf.Rad2Deg;
         }
         /// <summary>

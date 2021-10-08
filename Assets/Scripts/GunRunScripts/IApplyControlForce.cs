@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace com.braineeeeDevs.gunRun
+namespace com.braineeeeDevs.gr
 {
     interface IApplyControlForce
     {

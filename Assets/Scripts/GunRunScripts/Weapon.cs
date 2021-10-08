@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
-using com.braineeeeDevs.gunRun;
+using com.braineeeeDevs.gr;
 using UnityEngine;
 
 
-namespace com.braineeeeDevs.gunRun
+namespace com.braineeeeDevs.gr
 {
     public class Weapon : BasicObject, IShoot
     {

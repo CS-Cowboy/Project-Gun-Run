@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace com.braineeeeDevs.gunRun
+namespace com.braineeeeDevs.gr
 {
     public class SwayBar : VehicleComponent
     {
@@ -16,8 +16,8 @@ namespace com.braineeeeDevs.gunRun
         {
             var leanLeft = ComputeForce(left) - ComputeForce(right);
             var leanRight = ComputeForce(right) - ComputeForce(left);
-            left.antiRollForce = owner.SteeringAndDrive.x > 0f ? leanLeft : leanRight;
-            right.antiRollForce = owner.SteeringAndDrive.x > 0f ? leanRight : leanLeft;
+            left.antiRollForce = owner.SteeringAndDrive.x < 0f ? leanLeft : leanRight;
+            right.antiRollForce = owner.SteeringAndDrive.x > 0f ?  leanLeft : leanRight;
         }
 
         protected float ComputeForce(Wheel target)
@@ -29,7 +29,7 @@ namespace com.braineeeeDevs.gunRun
                 target.wheelCollider.GetGroundHit(out hit);
                 force = ((hit.point - target.wheelCollider.transform.position).magnitude / target.wheelCollider.suspensionDistance) ;
             }
-            return force * owner.traits.antiRollForce;
+            return force * owner.vehicleTraits.antiRollForce;
         }
     }
 }

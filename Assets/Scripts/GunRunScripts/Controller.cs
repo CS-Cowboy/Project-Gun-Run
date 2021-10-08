@@ -1,10 +1,8 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 
-namespace com.braineeeeDevs.gunRun
+namespace com.braineeeeDevs.gr
 {
     /// <summary>
     /// The tie-in controller for controlling GroundVehicles.
@@ -13,7 +11,8 @@ namespace com.braineeeeDevs.gunRun
     {
         public GroundVehicle puppet;
         public Vector3 mousePosition, drive_and_steering;
-        protected bool applyBrakes, toggleDriveState = false, toggleLights = false, toggleFogLights = false;
+        public float roll = 0f;
+        protected bool applyBrakes, toggleParkState = false, toggleDriveState = false, toggleLights = false, toggleFogLights = false;
         /// <summary>
         /// Sets the vehicle under control.
         /// </summary>
@@ -30,7 +29,9 @@ namespace com.braineeeeDevs.gunRun
             applyBrakes = Input.GetAxisRaw("Jump") > 0f;
             toggleLights = Input.GetAxisRaw("Headlights") > 0f;
             toggleFogLights = Input.GetAxisRaw("Foglights") > 0f;
-            toggleDriveState = Input.GetAxisRaw("DriveShifter") > 0f;
+            toggleParkState = Input.GetAxisRaw("ParkShifter") > 0f;
+            toggleDriveState = Input.GetAxisRaw("DriveMode") > 0 ;
+            roll = Input.GetAxis("Roll");
             drive_and_steering = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0f);
             mousePosition = new Vector3(Input.mousePosition.x - Screen.width * 0.5f, Input.mousePosition.y - Screen.height * 0.5f, Input.GetAxisRaw("Mouse ScrollWheel"));
         }
@@ -40,10 +41,14 @@ namespace com.braineeeeDevs.gunRun
         void ApplyInputsTo()
         {
             puppet.applyingBrakes = applyBrakes;
-            puppet.SteeringAndDrive = new Vector2(drive_and_steering.x, drive_and_steering.y);
-            if (toggleDriveState)
+            puppet.SteeringAndDrive = drive_and_steering;   
+            if (toggleParkState)
             {
-                puppet.Shift();
+                puppet.ShiftDrive();
+            }
+            if(toggleDriveState)
+            {
+                puppet.ShiftDriveMode();
             }
             if (toggleLights)
             {
@@ -51,11 +56,11 @@ namespace com.braineeeeDevs.gunRun
             }
             if (toggleFogLights)
             {
-                puppet.ToggleHighBeams();
+                puppet.ToggleFogLamps();
             }
         }
 
-        private void LateUpdate()
+        private void Update()
         {
             GetInputs();
         }

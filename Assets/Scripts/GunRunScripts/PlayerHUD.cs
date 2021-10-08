@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-namespace com.braineeeeDevs.gunRun
+namespace com.braineeeeDevs.gr
 {
     public class PlayerHUD : MonoBehaviour
     {
@@ -10,39 +10,51 @@ namespace com.braineeeeDevs.gunRun
         //d. race time
         //e. map!
 
-        protected UnityEngine.UI.Slider speedometer, tachometer;
+        public UnityEngine.UI.Slider speedometer, tachometer;
         protected UnityEngine.UI.Text lapTime;
         protected float lapTimeCounter;
         public Canvas canvasInstance;
+        public CameraSettings camSettings;
         void Start()
         {
             this.BuildHUD();
         }
         /// <summary>
         /// Builds the Heads-Up-Display from the ObjectAttributes 'HudPrefab' variable and attaches it to the player's camera. 
-        /// </summary>
+            /// </summary>  
         void BuildHUD()
         {
-            if (CameraController.playerControls.puppet != null && CameraController.playerControls.puppet.traits != null)
+            if (CameraController.playerControls.puppet != null && CameraController.playerControls.puppet.vehicleTraits != null)
             {
-                var hudObj = Instantiate(CameraController.playerControls.puppet.traits.hudPrefab);
+                var hudObj = Instantiate(CameraController.playerControls.puppet.vehicleTraits.hudPrefab);
                 canvasInstance = hudObj.GetComponent<Canvas>();
-                canvasInstance.renderMode = RenderMode.ScreenSpaceCamera;
+                canvasInstance.renderMode = camSettings.renderMode;
                 canvasInstance.worldCamera = CameraController.playerCamera;
-                speedometer = canvasInstance.GetComponentInChildren<UnityEngine.UI.Slider>();
-                tachometer = canvasInstance.GetComponentInChildren<UnityEngine.UI.Slider>();
+                CameraController.playerCamera.fieldOfView = camSettings.cameraAngle;
+                CameraController.playerCamera.usePhysicalProperties = false;
+                CameraController.playerCamera.focalLength = camSettings.focusLength;
+                CameraController.playerCamera.farClipPlane = camSettings.outerFocus;
+                CameraController.playerCamera.nearClipPlane = camSettings.innerFocus;
+                var sliders = canvasInstance.GetComponentsInChildren<UnityEngine.UI.Slider>();
+                speedometer = sliders[0];
+                tachometer = sliders[1];
                 lapTime = canvasInstance.GetComponentInChildren<UnityEngine.UI.Text>();
-                this.transform.SetParent(CameraController.playerCamera.transform);
+                tachometer.maxValue = CameraController.playerControls.puppet.vehicleTraits.tachometerLimit;
+                speedometer.maxValue = CameraController.playerControls.puppet.vehicleTraits.topSpeed;
+            }
+            else
+            {
+                Debug.Log("Null on hud creation.");
             }
         }
 
         public void UpdateTachometer()
         {
-            tachometer.value = (float)CameraController.playerControls.puppet.engine.speed;
+            tachometer.value = Mathf.Abs( CameraController.playerControls.puppet.engine.speed);
         }
         public void UpdateSpeedometer()
         {
-            speedometer.value = (float)CameraController.playerControls.puppet.RBPhysics.velocity.magnitude;
+            speedometer.value = Mathf.Abs(CameraController.playerControls.puppet.WheelVelocity );
         }
         public void Update()
         {

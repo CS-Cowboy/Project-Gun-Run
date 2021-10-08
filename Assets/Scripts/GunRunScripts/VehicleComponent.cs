@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace com.braineeeeDevs.gunRun
+namespace com.braineeeeDevs.gr
 {
 
     /// <summary>
@@ -15,9 +15,9 @@ namespace com.braineeeeDevs.gunRun
         /// <summary>
         /// Determined by quantity of hits.
         /// </summary>
-        
-        public enum THERMAL_CONDITION { COOL = 0, AT_OPERATING_TEMP = 1, HEAT_STRESSED = 2, HEAT_DAMAGED = 3, NON_OPERABLE_TERMINALLY_OVERHEATED = 4};
-        public THERMAL_CONDITION currentThermalCondition = THERMAL_CONDITION.COOL;
+
+        public enum DAMAGE_CONDITION { LEVEL_1 = 0, LEVEL_2 = 1, LEVEL_3 = 2, LEVEL_4 = 3, LEVEL_5 = 4, LEVEL_6 = 6,  LEVEL_7 = 7 };
+        public DAMAGE_CONDITION currentThermalCondition = DAMAGE_CONDITION.LEVEL_1;
 
         public virtual void Start()
         {
@@ -51,19 +51,25 @@ namespace com.braineeeeDevs.gunRun
         /// </summary>
         void ITakeDamage.Hit()
         {
-            switch(currentThermalCondition)
+            switch (currentThermalCondition)
             {
-                case THERMAL_CONDITION.COOL:
-                    currentThermalCondition = THERMAL_CONDITION.AT_OPERATING_TEMP;
+                case DAMAGE_CONDITION.LEVEL_1:
+                    currentThermalCondition = DAMAGE_CONDITION.LEVEL_2;
                     break;
-                case THERMAL_CONDITION.AT_OPERATING_TEMP:
-                    currentThermalCondition = THERMAL_CONDITION.HEAT_STRESSED;
+                case DAMAGE_CONDITION.LEVEL_2:
+                    currentThermalCondition = DAMAGE_CONDITION.LEVEL_3;
                     break;
-                case THERMAL_CONDITION.HEAT_STRESSED:
-                    currentThermalCondition = THERMAL_CONDITION.HEAT_DAMAGED;
+                case DAMAGE_CONDITION.LEVEL_3:
+                    currentThermalCondition = DAMAGE_CONDITION.LEVEL_4;
                     break;
-                case THERMAL_CONDITION.HEAT_DAMAGED:
-                    currentThermalCondition = THERMAL_CONDITION.NON_OPERABLE_TERMINALLY_OVERHEATED;
+                case DAMAGE_CONDITION.LEVEL_4:
+                    currentThermalCondition = DAMAGE_CONDITION.LEVEL_5;
+                    break;
+                case DAMAGE_CONDITION.LEVEL_5:
+                    currentThermalCondition = DAMAGE_CONDITION.LEVEL_6;
+                    break;
+                case DAMAGE_CONDITION.LEVEL_6:
+                    currentThermalCondition = DAMAGE_CONDITION.LEVEL_7;
                     break;
             };
         }

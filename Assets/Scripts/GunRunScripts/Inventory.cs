@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace com.braineeeeDevs.gunRun
+namespace com.braineeeeDevs.gr
 {
    
 public class Inventory : MonoBehaviour

@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace com.braineeeeDevs.gunRun
+namespace com.braineeeeDevs.gr
 {
     public class Engine : VehicleComponent
     {
-        public float speed = 0f, deltaAcceleratorRPM = 200f, driveDirection = +1f;
-        public override void Operate(float delta)
+        public float speed = 0f;
+        /// <summary>
+        /// Operates the Engine. You must call this every FixedUpdate regardless of its condition.
+        /// </summary>
+        /// <param name="input">The input directly from the Controller in range of [0,1].</param>
+        public override void Operate(float input)
         {
-            driveDirection = delta >= 0f ? +1f : -1f;
-            speed = Mathf.Clamp(speed +  delta * deltaAcceleratorRPM, 500f, owner.traits.tachometerLimitInRPM);
+            speed = Mathf.Clamp(input, owner.vehicleTraits.idleSpeed, owner.vehicleTraits.tachometerLimit);
             //Don't forget to add sound fx and animation; this is pointless without effects!
         }
     }
