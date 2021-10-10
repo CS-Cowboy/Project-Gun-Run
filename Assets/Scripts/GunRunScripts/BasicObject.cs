@@ -15,7 +15,7 @@ namespace com.braineeeeDevs.gr
         public AudioSource sfx;
         public ObjectAttributes traits;
         protected Animation animators;
-        protected Rigidbody rbPhysics;
+            protected Rigidbody rbPhysics;
         protected Guid id;
         public Guid PoolID
         {
@@ -75,5 +75,6 @@ namespace com.braineeeeDevs.gr
             gameObject.SetActive(false);
             PoolHandler.GiveObject(this);
         }
+        
     }
 }

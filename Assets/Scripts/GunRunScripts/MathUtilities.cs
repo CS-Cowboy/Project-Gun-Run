@@ -27,7 +27,7 @@ public static class MathUtilities
     public static float GetTorqueFrom(float speed, float power)
     {
         //eqn: Torque (N.m) = 9.5488 x Power (watts) / Speed (RPM)
-        return power * Nm2Kwatts / Mathf.Clamp(speed, 1f, float.MaxValue);
+        return power * Nm2Kwatts / Mathf.Clamp(speed, 500f, float.MaxValue);
     }
 
     /// <summary>

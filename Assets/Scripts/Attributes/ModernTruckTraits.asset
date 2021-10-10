@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a106245d30800404482bf4d5dfe32ec7, type: 3}
   m_Name: ModernTruckTraits
   m_EditorClassIdentifier: 
+  brakingForce: 200
+  highBeamRange: 20
+  highbeamSpotAngle: 25
+  headlampRange: 40
+  headlampSpotAngle: 35.72
   foglampRange: 60
   foglampAngle: 45
-  enginePower: 169
-  finalDrive: 1.15
+  enginePower: 260.995
+  finalDrive: 0.7
   suspensionDistance: 0.1
   forwardFrictionStiffness: 1.25
   sideFrictionStiffness: 1.15
@@ -26,6 +31,7 @@ MonoBehaviour:
   antiRollForce: 600
   turnRadius: 17
   idleSpeed: 20
+  hudPrefab: {fileID: 772892077814719115, guid: b053cd9c37cb6164497474a47549e851, type: 3}
   engineSpeedToTorqueGearCurve:
     serializedVersion: 2
     m_Curve: []

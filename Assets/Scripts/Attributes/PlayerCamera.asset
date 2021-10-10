@@ -18,11 +18,11 @@ MonoBehaviour:
   outerFocus: 9999
   rollSpeed: 3
   speedMultipler: 4
-  lookSpeed: 3
-  lookAcceleration: 3
+  lookSpeed: 10
+  lookAcceleration: 5
   camSpeed: 2.026933
-  zoomSpeed: 0.5
-  innerZoomLimit: 5
+  zoomSpeed: 30
+  innerZoomLimit: 7
   outerZoomLimit: 20
   lowerCamSpeedLimit: 2
   upperCamSpeedLimit: 100

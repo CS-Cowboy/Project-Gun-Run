@@ -12,7 +12,7 @@ namespace com.braineeeeDevs.gr
         public GroundVehicle puppet;
         public Vector3 mousePosition, drive_and_steering;
         public float roll = 0f;
-        protected bool applyBrakes, toggleParkState = false, toggleDriveState = false, toggleLights = false, toggleFogLights = false;
+        protected bool applyBrakes, shiftBackward = false, toggleParkState = false, shiftForward = false, toggleLights = false, toggleFogLights = false;
         /// <summary>
         /// Sets the vehicle under control.
         /// </summary>
@@ -30,7 +30,8 @@ namespace com.braineeeeDevs.gr
             toggleLights = Input.GetAxisRaw("Headlights") > 0f;
             toggleFogLights = Input.GetAxisRaw("Foglights") > 0f;
             toggleParkState = Input.GetAxisRaw("ParkShifter") > 0f;
-            toggleDriveState = Input.GetAxisRaw("DriveMode") > 0 ;
+            shiftForward = Input.GetAxis("Vertical") > 0f;
+            shiftBackward = Input.GetAxis("Vertical") < 0f;
             roll = Input.GetAxis("Roll");
             drive_and_steering = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0f);
             mousePosition = new Vector3(Input.mousePosition.x - Screen.width * 0.5f, Input.mousePosition.y - Screen.height * 0.5f, Input.GetAxisRaw("Mouse ScrollWheel"));
@@ -41,14 +42,10 @@ namespace com.braineeeeDevs.gr
         void ApplyInputsTo()
         {
             puppet.applyingBrakes = applyBrakes;
-            puppet.SteeringAndDrive = drive_and_steering;   
+            puppet.SteeringAndDrive = drive_and_steering;
             if (toggleParkState)
             {
-                puppet.ShiftDrive();
-            }
-            if(toggleDriveState)
-            {
-                puppet.ShiftDriveMode();
+                puppet.ShiftPark();
             }
             if (toggleLights)
             {

@@ -6,8 +6,8 @@ namespace com.braineeeeDevs.gr
 {
     interface ITakeDamage
     {
-        void ApplyDamage(float quantity);
         void Hit();
+        float EvaluateHits();
         void Die();
     }
 }

@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections;
 namespace com.braineeeeDevs.gr
 {
     [System.Serializable]
@@ -7,15 +7,19 @@ namespace com.braineeeeDevs.gr
     /// A class to represent and tie together wheel collider, meshes, and functionality.
     /// </summary>
     [RequireComponent(typeof(Calculus))]
-
     public class Wheel : VehicleComponent
     {
         public WheelCollider wheelCollider;
         public MeshRenderer mesh;
         protected Calculus wheelCalculus;
-        public float velocity, acceleration, slip, tireDiameterInMeters, inertia, drivingForce, antiRollForce = 1f;
+        public float mTorq, bTorq, velocity, acceleration, slip, tireDiameterInMeters, inertia, drivingForce, antiRollForce = 1f;
         public uint wheelNumber = 0;
-        public bool isTurning = false;
+        public bool isTurning = false, isBraking = true, inDrive = false;
+        ITakeDamage damage;
+        public void Awake()
+        {
+            damage = GetComponent<ITakeDamage>();
+        }
         /// <summary>
         /// Velocity of the wheel (rev/min)
         /// </summary>
@@ -76,9 +80,10 @@ namespace com.braineeeeDevs.gr
         {
             if (owner != null && wheelCollider != null)
             {
+                inputTorque *= damage.EvaluateHits();
+                mTorq = wheelCollider.motorTorque = inputTorque;
+                bTorq = wheelCollider.brakeTorque = 0f;
                 ComputeSlip(inputTorque);
-                wheelCollider.motorTorque = inputTorque;
-                wheelCollider.brakeTorque = 0f;
                 ApplyPose();
                 owner.RBPhysics.AddForceAtPosition(Vector3.up * -antiRollForce, transform.parent.position);
                 isTurning = Mathf.Abs(AngularVelocity) >= 1f;
@@ -86,8 +91,8 @@ namespace com.braineeeeDevs.gr
         }
         public void ApplyBrake()
         {
-            wheelCollider.brakeTorque = ((owner.traits.mass + wheelCollider.mass) * owner.vehicleTraits.brakingForce);
-            wheelCollider.motorTorque = 0f;
+            mTorq = wheelCollider.motorTorque = 0f;
+            bTorq = wheelCollider.brakeTorque = ((owner.traits.mass + wheelCollider.mass) * owner.vehicleTraits.brakingForce);
         }
         /// Computes the wheel's slip and speed.    
         /// </summary>
@@ -103,7 +108,6 @@ namespace com.braineeeeDevs.gr
             var b = (owner.Velocity.magnitude / (inertia * wheelCollider.radius * Mathf.Clamp(Mathf.Pow(AngularVelocity, 2f), 1f, float.MaxValue))) * (inputTorque - wheelCollider.radius * (drivingForce));
             drivingForce = a + b;
 
-            //  Debug.Log(string.Format("NonLinearSlip for wheel {0}:=>> {1} ", wheelNumber, nonLinearSlip));
         }
 
         /// <summary>

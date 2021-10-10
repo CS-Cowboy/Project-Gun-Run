@@ -87,7 +87,7 @@ namespace com.braineeeeDevs.gr
         }
         protected void LateUpdate()
         {
-            Vector3 lookPhysics = (mousePhysics.ThreeSpacePosition + mousePhysics.ThreeSpaceVelocity * camSet.lookSpeed + mousePhysics.ThreeSpaceAcceleration * camSet.lookAcceleration);
+            Vector3 lookPhysics = ( mousePhysics.ThreeSpaceVelocity * camSet.lookSpeed + mousePhysics.ThreeSpaceAcceleration * camSet.lookAcceleration);
             if (orbiter != null && CameraController.playerControls.puppet != null)
             {
                 OrbitCamera(Time.deltaTime * (lookPhysics));

@@ -6,7 +6,7 @@ namespace com.braineeeeDevs.gr
     /// A four wheel vehicle to drive.
     /// </summary>
     [RequireComponent(typeof(Calculus))]
-    public class GroundVehicle : BasicObject, IPublish, ITakeDamage
+    public class GroundVehicle : BasicObject, IPublish, IShowDamage 
     {
         public bool isPlayer = false;
         public VehicleTraits vehicleTraits;
@@ -14,7 +14,7 @@ namespace com.braineeeeDevs.gr
         protected float damagePoints, whlVel;
         public Wheel[] wheels = new Wheel[MathUtilities.wheelQuantity];
         public Transform orbiter;
-        public float rightingForce = 3f;
+        public float rightingForce = 7f;
         public bool applyingBrakes = true, TCEngaged = false, allWheelsGrounded = false, allWheelsStopped = false;
         protected Vector2 driveInput;
         public Calculus vehicleCalculus;
@@ -81,8 +81,9 @@ namespace com.braineeeeDevs.gr
                 return whlVel;
             }
         }
-        public void Awake()
+        public override void Awake()
         {
+            base.Awake();
             vehicleCalculus = GetComponent<Calculus>();
         }
         public override void Start()
@@ -178,17 +179,10 @@ namespace com.braineeeeDevs.gr
             headlight[0].enabled = headlight[1].enabled = true;
             foglight[0].enabled = foglight[1].enabled = !(foglight[0].enabled && foglight[1].enabled);
         }
-        public void ShiftDrive()
+        public void ShiftPark()
         {
             if (allWheelsStopped)
                 TCEngaged = transmission.torqueConverterEngaged = !transmission.torqueConverterEngaged;
-        }
-        public void ShiftDriveMode()
-        {
-            if (allWheelsStopped)
-            {
-                transmission.ToggleShift();
-            }
         }
 
         protected float ComputeAckermannSteering(float r, bool isInner)
@@ -221,20 +215,10 @@ namespace com.braineeeeDevs.gr
         {
 
         }
-
-        void ITakeDamage.ApplyDamage(float quantity)
+        void IShowDamage.Apply(Vector3 direction)
         {
-
+            
         }
-        void ITakeDamage.Hit()
-        {
-
-        }
-        void ITakeDamage.Die()
-        {
-
-        }
-
     }
 
 }
