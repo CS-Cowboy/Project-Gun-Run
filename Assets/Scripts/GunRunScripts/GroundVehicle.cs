@@ -6,12 +6,12 @@ namespace com.braineeeeDevs.gr
     /// A four wheel vehicle to drive.
     /// </summary>
     [RequireComponent(typeof(Calculus))]
-    public class GroundVehicle : BasicObject, IPublish, IShowDamage 
+    public class GroundVehicle : BasicObject, IPublish, IShowDamage
     {
         public bool isPlayer = false;
         public VehicleTraits vehicleTraits;
         protected uint lampLevel = 0, prevLampLevel = 0;
-        protected float damagePoints, whlVel;
+        protected float damagePoints, whlVel, whlRadius;
         public Wheel[] wheels = new Wheel[MathUtilities.wheelQuantity];
         public Transform orbiter;
         public float rightingForce = 7f;
@@ -90,6 +90,7 @@ namespace com.braineeeeDevs.gr
         {
             base.Start();
             damagePoints = 0f;
+            whlRadius = wheels[0].Collider.radius;
             if (isPlayer)
             {
                 CameraController.AttachTo(this);
@@ -111,9 +112,8 @@ namespace com.braineeeeDevs.gr
             front_swaybar.Operate();
             rear_swaybar.Operate();
 
-            float radius = wheels[0].wheelCollider.radius;
-            wheels[0].SteerAngle = SteeringAndDrive.x > 0f ? ComputeAckermannSteering(radius, false) : ComputeAckermannSteering(radius, true);
-            wheels[1].SteerAngle = SteeringAndDrive.x > 0f ? ComputeAckermannSteering(radius, false) : ComputeAckermannSteering(radius, true);
+            wheels[0].SteerAngle = SteeringAndDrive.x > 0f ? ComputeAckermannSteering(whlRadius, false) : ComputeAckermannSteering(whlRadius, true);
+            wheels[1].SteerAngle = SteeringAndDrive.x > 0f ? ComputeAckermannSteering(whlRadius, false) : ComputeAckermannSteering(whlRadius, true);
 
             whlVel = Mathf.Abs(0.25f * (wheels[0].AngularVelocity + wheels[1].AngularVelocity + wheels[2].AngularVelocity + wheels[3].AngularVelocity));
 
@@ -140,8 +140,7 @@ namespace com.braineeeeDevs.gr
                 wheels[3].Operate(rear_differential.right_torque);
             }
 
-            allWheelsGrounded = wheels[0].wheelCollider.isGrounded && wheels[2].wheelCollider.isGrounded || wheels[1].wheelCollider.isGrounded && wheels[3].wheelCollider.isGrounded;
-            allWheelsStopped = !(wheels[0].isTurning && wheels[2].isTurning && wheels[1].isTurning && wheels[3].isTurning);
+            allWheelsGrounded = wheels[4].isGrounded && wheels[3].isGrounded && wheels[1].isGrounded &&wheels[0].isGrounded;
 
             if (!allWheelsGrounded)
             {
@@ -217,7 +216,7 @@ namespace com.braineeeeDevs.gr
         }
         void IShowDamage.Apply(Vector3 direction)
         {
-            
+
         }
     }
 

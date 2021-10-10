@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 namespace com.braineeeeDevs.gr
 {
     [System.Serializable]
@@ -7,18 +6,42 @@ namespace com.braineeeeDevs.gr
     /// A class to represent and tie together wheel collider, meshes, and functionality.
     /// </summary>
     [RequireComponent(typeof(Calculus))]
+    [RequireComponent(typeof(MeshCollider))]
     public class Wheel : VehicleComponent
     {
-        public WheelCollider wheelCollider;
+        protected WheelCollider wheelCollider;
         public MeshRenderer mesh;
         protected Calculus wheelCalculus;
         public float mTorq, bTorq, velocity, acceleration, slip, tireDiameterInMeters, inertia, drivingForce, antiRollForce = 1f;
         public uint wheelNumber = 0;
         public bool isTurning = false, isBraking = true, inDrive = false;
         ITakeDamage damage;
+        public WheelCollider Collider
+        {
+            get
+            {
+                return wheelCollider;
+            }
+            set
+            {
+                wheelCollider = value;
+            }
+        }
+
+        public bool isGrounded
+        {
+            get
+            {
+                //YEP. That's a double ternary operation.
+                return wheelCollider == null ? true : wheelCollider.isGrounded ? true : false;
+            }
+        }
         public void Awake()
         {
             damage = GetComponent<ITakeDamage>();
+            var mshCollider = gameObject.GetComponent<MeshCollider>();
+            mshCollider.convex = true;
+            mshCollider.transform.localScale = Vector3.one * 0.97f;
         }
         /// <summary>
         /// Velocity of the wheel (rev/min)
@@ -61,7 +84,8 @@ namespace com.braineeeeDevs.gr
         {
             set
             {
-                wheelCollider.steerAngle = value;
+                if (wheelCollider != null)
+                    wheelCollider.steerAngle = value;
             }
         }
         public override void Start()
@@ -80,19 +104,30 @@ namespace com.braineeeeDevs.gr
         {
             if (owner != null && wheelCollider != null)
             {
-                inputTorque *= damage.EvaluateHits();
-                mTorq = wheelCollider.motorTorque = inputTorque;
-                bTorq = wheelCollider.brakeTorque = 0f;
-                ComputeSlip(inputTorque);
-                ApplyPose();
-                owner.RBPhysics.AddForceAtPosition(Vector3.up * -antiRollForce, transform.parent.position);
-                isTurning = Mathf.Abs(AngularVelocity) >= 1f;
+                float effectiveness = damage.EvaluateHits(owner.vehicleTraits.components.wheelHitsCurve);
+                if (effectiveness == 0f)
+                {
+                    Jetison();
+                }
+                else
+                {
+                    inputTorque *= effectiveness;
+                    mTorq = wheelCollider.motorTorque = inputTorque;
+                    bTorq = wheelCollider.brakeTorque = 0f;
+                    ComputeSlip(inputTorque);
+                    ApplyPose();
+                    owner.RBPhysics.AddForceAtPosition(Vector3.up * -antiRollForce, transform.parent.position);
+                    isTurning = Mathf.Abs(AngularVelocity) >= 1f;
+                }
             }
         }
         public void ApplyBrake()
         {
-            mTorq = wheelCollider.motorTorque = 0f;
-            bTorq = wheelCollider.brakeTorque = ((owner.traits.mass + wheelCollider.mass) * owner.vehicleTraits.brakingForce);
+            if (wheelCollider != null)
+            {
+                mTorq = wheelCollider.motorTorque = 0f;
+                bTorq = wheelCollider.brakeTorque = ((owner.traits.mass + wheelCollider.mass) * owner.vehicleTraits.brakingForce);
+            }
         }
         /// Computes the wheel's slip and speed.    
         /// </summary>
@@ -120,6 +155,15 @@ namespace com.braineeeeDevs.gr
             wheelCollider.GetWorldPose(out wheelPos, out wheelRot);
             transform.parent.rotation = wheelRot * Quaternion.Euler(0f, 180f, 0f);
         }
-
+        protected void Jetison()
+        {
+            float whlSpd = wheelCollider.motorTorque;
+            DestroyImmediate(wheelCollider);
+            owner.wheels[this.wheelNumber] = null;
+            var rigidbdy = gameObject.AddComponent<Rigidbody>();
+            this.transform.SetParent(null);
+            rigidbdy.mass = owner.vehicleTraits.wheelMass;
+            rigidbdy.AddRelativeTorque(Vector3.right * whlSpd);
+        }
     }
 }

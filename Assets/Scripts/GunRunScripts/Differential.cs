@@ -19,7 +19,7 @@ namespace com.braineeeeDevs.gr
         /// <param name="inputTorque">The torque (Nm).</param>
         public override void Operate(float inputTorque)
         {
-            var damageRatio = damage.EvaluateHits();
+            var damageRatio = damage.EvaluateHits(owner.vehicleTraits.components.diffHitsCurve);
             left_torque = right_torque = damageRatio * inputTorque * 0.5f;
         }
     }

@@ -32,6 +32,7 @@ MonoBehaviour:
   turnRadius: 17
   idleSpeed: 20
   hudPrefab: {fileID: 772892077814719115, guid: b053cd9c37cb6164497474a47549e851, type: 3}
+  components: {fileID: 11400000, guid: 518a02f843b9a4641ad036feb250398a, type: 2}
   engineSpeedToTorqueGearCurve:
     serializedVersion: 2
     m_Curve: []

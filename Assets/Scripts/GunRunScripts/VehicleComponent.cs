@@ -9,7 +9,10 @@ namespace com.braineeeeDevs.gr
     /// >
     [RequireComponent(typeof(MeshRenderer))]
     [RequireComponent(typeof(MeshFilter))]
-
+    [RequireComponent(typeof(Calculus))]
+    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(Animation))]
+    [RequireComponent(typeof(AudioSource))]
     public abstract class VehicleComponent : MonoBehaviour, ITakeDamage
     {
         /// <summary>
@@ -18,7 +21,9 @@ namespace com.braineeeeDevs.gr
 
         public float hits = 0f;
         public ComponentTraits componentTraits;
-    
+        public Calculus componentCalculus;
+
+
         public virtual void Start()
         {
             owner = GetComponentInParent<GroundVehicle>();
@@ -38,9 +43,9 @@ namespace com.braineeeeDevs.gr
             Debug.Log("Base Operate(void) Called.");
         }
 
-        float ITakeDamage.EvaluateHits()
+        float ITakeDamage.EvaluateHits(AnimationCurve target)
         {
-            return Mathf.Clamp(componentTraits.hitsCurve.Evaluate(hits),0f, 1f);
+            return Mathf.Clamp(target.Evaluate(hits), 0f, 1f);
         }
         /// <summary>
         /// Used to apply damage hits to the component.

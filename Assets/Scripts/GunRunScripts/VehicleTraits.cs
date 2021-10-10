@@ -10,6 +10,7 @@ namespace com.braineeeeDevs.gr
 
         public float brakingForce, highBeamRange, highbeamSpotAngle, headlampRange, headlampSpotAngle,foglampRange = 60f, foglampAngle = 45f, enginePower = 169.0f, finalDrive, suspensionDistance = 0.1f, forwardFrictionStiffness = 1.25f, sideFrictionStiffness = 1.15f, wheelMass = 20f, tachometerLimit = 8000.0f, wheelBaseLength, wheelBaseWidth, antiRollForce, turnRadius, idleSpeed = 20f;
         public GameObject hudPrefab;
+        public ComponentTraits components;
         /// <summary>
         /// In case of CVT
         /// </summary>

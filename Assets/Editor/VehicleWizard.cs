@@ -14,7 +14,6 @@ namespace com.braineeeeDevs.gr.Editor
         private uint wheelCount = 0;
         public bool isPlayer = true;
         private bool isComplete = false;
-        protected Wheel latestTire;
         private GameObject newVehicle;
         private GroundVehicle vehicle;
         public ObjectAttributes traits;
@@ -223,7 +222,7 @@ namespace com.braineeeeDevs.gr.Editor
                     {
                         vehicle.rear_differential = mesh.gameObject.AddComponent<Differential>();
                         vehicle.rear_differential.owner = vehicle;
-                    }
+                        }
 
                 }
                 else if (meshName.Contains("engine"))
@@ -284,21 +283,21 @@ namespace com.braineeeeDevs.gr.Editor
             newWheel.owner = vehicle;
             newWheel.mesh = mesh;
             colliderObject.name = mesh.gameObject.name + colliderObject.name;
-            newWheel.wheelCollider = colliderObject.AddComponent<WheelCollider>();
-            newWheel.wheelCollider.radius = GetTireSize(mesh, newWheel);
+            newWheel.Collider = colliderObject.AddComponent<WheelCollider>();
+            newWheel.Collider.radius = GetTireSize(mesh, newWheel);
             WheelFrictionCurve friction = new WheelFrictionCurve();
             friction.extremumSlip = 0.4f;
             friction.extremumValue = 1f;
             friction.asymptoteSlip = 0.8f;
             friction.asymptoteValue = 0.5f;
             friction.stiffness = vehicle.vehicleTraits.forwardFrictionStiffness;
-            newWheel.wheelCollider.suspensionDistance = vehicle.vehicleTraits.suspensionDistance;
-            newWheel.wheelCollider.forwardFriction = friction;
+            newWheel.Collider.suspensionDistance = vehicle.vehicleTraits.suspensionDistance;
+            newWheel.Collider.forwardFriction = friction;
 
             friction.stiffness = vehicle.vehicleTraits.sideFrictionStiffness;
-            newWheel.wheelCollider.sidewaysFriction = friction;
+            newWheel.Collider.sidewaysFriction = friction;
             //Set tags
-            newWheel.wheelCollider.tag = colliderTag;
+            newWheel.Collider.tag = colliderTag;
             mesh.tag = wheelTag;
             //Attach collider to axle.
             float sign = mesh.transform.localPosition.x < 0f ? -1f : +1f;

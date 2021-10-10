@@ -110,7 +110,7 @@ namespace com.braineeeeDevs.gr.Tests
         {
             for (int c = 0; c < grndVehicle.wheels.Length; c++)
             {
-                Assert.IsNotNull(grndVehicle.wheels[c].wheelCollider, string.Format("{0}'th wheel collider is null", c));
+                Assert.IsNotNull(grndVehicle.wheels[c].Collider, string.Format("{0}'th wheel collider is null", c));
             }
         }
 

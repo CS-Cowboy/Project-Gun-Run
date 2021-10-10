@@ -17,17 +17,17 @@ namespace com.braineeeeDevs.gr
         public override void Operate()
         {
             var lean = owner.SteeringAndDrive.x < 0f ? (ComputeForce(right) - ComputeForce(left)) : (ComputeForce(left) - ComputeForce(right));
-            right.antiRollForce = left.antiRollForce = lean * damage.EvaluateHits();
+            right.antiRollForce = left.antiRollForce = lean * damage.EvaluateHits(owner.vehicleTraits.components.swaybarHitsCurve);
         }
 
         protected float ComputeForce(Wheel target)
         {
             float force = 1f;
-            if (target.wheelCollider.isGrounded)
+            if (target.Collider != null && target.Collider.isGrounded)
             {
                 WheelHit hit = new WheelHit();
-                target.wheelCollider.GetGroundHit(out hit);
-                force = ((hit.point - target.wheelCollider.transform.position).magnitude / target.wheelCollider.suspensionDistance);
+                target.Collider.GetGroundHit(out hit);
+                force = ((hit.point - target.Collider.transform.position).magnitude / target.Collider.suspensionDistance);
             }
             return force * owner.vehicleTraits.antiRollForce;
         }

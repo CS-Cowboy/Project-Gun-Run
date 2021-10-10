@@ -18,7 +18,7 @@ namespace com.braineeeeDevs.gr
         /// <param name="engineSpeed">Speed input to the transmission (rev/min).</param>
         public override void Operate(float engineSpeed)
         {
-            var effectiveness = damage.EvaluateHits();
+            var effectiveness = damage.EvaluateHits(owner.vehicleTraits.components.transmissionHitsCurve);
             driveDirection = engineSpeed >= 0f ? +1f : -1f;
             var torque = Mathf.Abs(MathUtilities.GetTorqueFrom(engineSpeed, owner.vehicleTraits.enginePower));
             if (torqueConverterEngaged)

@@ -7,7 +7,7 @@ namespace com.braineeeeDevs.gr
     interface ITakeDamage
     {
         void Hit();
-        float EvaluateHits();
+        float EvaluateHits(AnimationCurve target);
         void Die();
     }
 }
