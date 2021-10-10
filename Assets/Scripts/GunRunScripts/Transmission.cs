@@ -14,7 +14,7 @@ namespace com.braineeeeDevs.gr
         public override void Operate(float engineSpeed)
         {
             var damageRatio = ComputeDamage();
-            var torque = damageRatio * Mathf.Abs(MathUtilities.GetTorqueFrom(engineSpeed, owner.vehicleTraits.enginePower));
+            var torque = Mathf.Abs(MathUtilities.GetTorqueFrom(owner.WheelVelocity, owner.vehicleTraits.enginePower));
             if (torqueConverterEngaged)
             {
                 gearRatio = owner.vehicleTraits.GetGearRatioFromTorque(torque) * owner.vehicleTraits.finalDrive;
@@ -24,7 +24,7 @@ namespace com.braineeeeDevs.gr
             {
                 outputTorque = 0f;
             }
-            // Debug.Log(string.Format("Input Engine Speed -> {0}, Input Torque -> {1}, Output Torque -> {2}, GearRatio-> {3}", engineSpeed, torque, outputTorque, gearRatio));
+                Debug.Log(string.Format("Input Engine Speed -> {0}, Input Torque -> {1}, Output Torque -> {2}, GearRatio-> {3}", engineSpeed, torque, outputTorque, gearRatio));
         }
 
         public void ToggleShift()

@@ -101,7 +101,7 @@ namespace com.braineeeeDevs.gr
         void FixedUpdate()
         {
             vehicleCalculus.Compute(transform.position);
-            engine.Operate(MathUtilities.GetSpeedFrom(Mathf.Abs(transmission.outputTorque), vehicleTraits.enginePower));
+            engine.Operate(SteeringAndDrive.y);
             transmission.Operate(engine.speed);
 
             front_differential.Operate(transmission.outputTorque * 0.5f);
@@ -162,12 +162,12 @@ namespace com.braineeeeDevs.gr
             if (usingHeadLamps)
             {
                 headlight[0].range = headlight[1].range = vehicleTraits.highBeamRange;
-                headlight[0].spotAngle = headlight[1].spotAngle = vehicleTraits.highBeamSpotAngle;
+                headlight[0].spotAngle = headlight[1].spotAngle = vehicleTraits.highBeamRange;
             }
             else
             {
                 headlight[0].range = headlight[1].range = vehicleTraits.headlampRange;
-                headlight[0].spotAngle = headlight[1].spotAngle = vehicleTraits.headlampAngle;
+                headlight[0].spotAngle = headlight[1].spotAngle = vehicleTraits.headlampSpotAngle;
             }
         }
         /// <summary>

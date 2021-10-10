@@ -37,7 +37,9 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Tests\TestVehicleAndCamera.cs" />
-     <None Include="Assets\Tests\GunRunPlayTests.asmdef" />
+     <Compile Include="Assets\Tests\TestPoolers.cs" />
+     <Compile Include="Assets\Tests\TestPoolHandler.cs" />
+     <None Include="Assets\Tests\PlayModeTests.asmdef" />
     <Reference Include="UnityEngine">
         <HintPath>C:\Program Files\Unity\Hub\Editor\2021.1.22f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>
@@ -631,9 +633,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="GunRunPlaymode.csproj">
-      <Project>{805e796c-c8a2-c04a-1a01-5f04f88abfc5}</Project>
-      <Name>GunRunPlaymode</Name>
+    <ProjectReference Include="GunRunPlayMode.csproj">
+      <Project>{822e07ed-6414-e8c6-d57c-6fb0d121d214}</Project>
+      <Name>GunRunPlayMode</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

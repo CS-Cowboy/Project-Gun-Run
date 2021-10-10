@@ -13,7 +13,7 @@ namespace com.braineeeeDevs.gr
         /// <param name="input">The input directly from the Controller in range of [0,1].</param>
         public override void Operate(float input)
         {
-            speed = Mathf.Clamp(input, owner.vehicleTraits.idleSpeed, owner.vehicleTraits.tachometerLimit);
+            speed = Mathf.Clamp(speed * input, owner.vehicleTraits.idleSpeed, owner.vehicleTraits.tachometerLimit);
             //Don't forget to add sound fx and animation; this is pointless without effects!
         }
     }

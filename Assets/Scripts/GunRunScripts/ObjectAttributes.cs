@@ -9,9 +9,9 @@ namespace com.braineeeeDevs.gr
         /// <summary>
         /// We are using metric in this simulation.
         /// </summary>
-        public float topSpeed, brakingForce = 200f, headlampRange = 20f, headlampAngle = 16f, highBeamRange = 40f, highBeamSpotAngle = 40f, mass, drag, fireDelayTime, reloadDelayTime;
+        public float topSpeed, mass, drag;
+        public string poolID = System.Guid.Empty.ToString();
         public uint poolCapacity = 5;
-        public GameObject hudPrefab;
 
     }
 }

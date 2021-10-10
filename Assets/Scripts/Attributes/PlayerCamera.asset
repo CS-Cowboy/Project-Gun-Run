@@ -16,4 +16,15 @@ MonoBehaviour:
   focusLength: 10000
   innerFocus: 1
   outerFocus: 9999
+  rollSpeed: 3
+  speedMultipler: 4
+  lookSpeed: 3
+  lookAcceleration: 3
+  camSpeed: 2.026933
+  zoomSpeed: 0.5
+  innerZoomLimit: 5
+  outerZoomLimit: 20
+  lowerCamSpeedLimit: 2
+  upperCamSpeedLimit: 100
+  upperVerticalThetaLimit: 80
   renderMode: 0

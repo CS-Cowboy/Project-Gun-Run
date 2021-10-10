@@ -86,7 +86,7 @@ namespace com.braineeeeDevs.gr
         }
         public void ApplyBrake()
         {
-            wheelCollider.brakeTorque = ((owner.vehicleTraits.mass + wheelCollider.mass) * owner.vehicleTraits.brakingForce);
+            wheelCollider.brakeTorque = ((owner.traits.mass + wheelCollider.mass) * owner.vehicleTraits.brakingForce);
             wheelCollider.motorTorque = 0f;
         }
         /// Computes the wheel's slip and speed.    
@@ -96,13 +96,13 @@ namespace com.braineeeeDevs.gr
             velocity = owner.RBPhysics.velocity.magnitude;
             wheelCalculus.Compute(velocity);
             acceleration = wheelCalculus.Velocity;  //Because velocity is already computed Velocity is actually the acceleration in this case.
-            var rOmega = Mathf.Clamp(AngularVelocity * wheelCollider.radius, wheelCollider.radius, owner.vehicleTraits.topSpeed * wheelCollider.radius);
-            inertia = Mathf.Clamp(AngularVelocity, 1f, owner.vehicleTraits.topSpeed) * Mathf.Pow(wheelCollider.radius, 2f) * wheelCollider.mass;
+            var rOmega = Mathf.Clamp(AngularVelocity * wheelCollider.radius, wheelCollider.radius, owner.traits.topSpeed * wheelCollider.radius);
+            inertia = Mathf.Clamp(AngularVelocity, 1f, owner.traits.topSpeed) * Mathf.Pow(wheelCollider.radius, 2f) * wheelCollider.mass;
             slip = (rOmega - owner.RBPhysics.velocity.magnitude) / rOmega;
             var a = (owner.Acceleration.magnitude / Mathf.Clamp(owner.Velocity.magnitude, 1f, float.MaxValue)) * (slip - 1f);
             var b = (owner.Velocity.magnitude / (inertia * wheelCollider.radius * Mathf.Clamp(Mathf.Pow(AngularVelocity, 2f), 1f, float.MaxValue))) * (inputTorque - wheelCollider.radius * (drivingForce));
             drivingForce = a + b;
-            
+
             //  Debug.Log(string.Format("NonLinearSlip for wheel {0}:=>> {1} ", wheelNumber, nonLinearSlip));
         }
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-namespace com.braineeeeDevs.gr
+namespace com.braineeeeDevs.gr.Editor
 {
     /// <summary>
     /// A class for importing vehicle models to functioning gameObject status; using the rules given in the "ReadMeToImportModels" guide in this project.
@@ -17,6 +17,7 @@ namespace com.braineeeeDevs.gr
         protected Wheel latestTire;
         private GameObject newVehicle;
         private GroundVehicle vehicle;
+        public ObjectAttributes traits;
         public VehicleTraits attributes;
         private Wheel firstTireMade, lastTireMade;
         private Transform colliderChassis;
@@ -34,7 +35,7 @@ namespace com.braineeeeDevs.gr
         /// </summary>
         protected void OnWizardCreate()
         {
-            if (vehicleFilename != "Enter Value" && attributes != null)
+            if (vehicleFilename != "Enter Value" && attributes != null && traits != null)
             {
                 GameObject obj = Resources.Load<GameObject>(vehicleFilename);
                 GameObject child = obj.transform.GetChild(0).gameObject; //Get first child of file.
@@ -60,6 +61,7 @@ namespace com.braineeeeDevs.gr
         {
             vehicle = newVehicle.AddComponent<GroundVehicle>();
             vehicle.vehicleTraits = attributes;
+            vehicle.traits = traits;
 
             if (this.BuildPlayer())
             {
@@ -126,7 +128,7 @@ namespace com.braineeeeDevs.gr
                     Vector3 wheelBaseDiagonal = firstTireMade.transform.position - lastTireMade.transform.position;
                     attributes.wheelBaseLength = Vector3.ProjectOnPlane(wheelBaseDiagonal, vehicle.transform.right).magnitude;
                     attributes.wheelBaseWidth = Vector3.ProjectOnPlane(wheelBaseDiagonal, vehicle.transform.forward).magnitude;
-                    attributes.topSpeed = MathUtilities.MetricTopSpeedWithDrag(attributes.engineSpeedToTorqueGearCurve.Evaluate(0f) * attributes.finalDrive / MathUtilities.wheelQuantity, attributes.drag);
+                    traits.topSpeed = MathUtilities.MetricTopSpeedWithDrag(attributes.engineSpeedToTorqueGearCurve.Evaluate(0f) * attributes.finalDrive / MathUtilities.wheelQuantity, traits.drag);
 
                 }
             }
@@ -259,7 +261,7 @@ namespace com.braineeeeDevs.gr
             if (!isFogLamp)
             {
                 lamp.range = vehicle.vehicleTraits.headlampRange;
-                lamp.spotAngle = vehicle.vehicleTraits.headlampAngle;
+                lamp.spotAngle = vehicle.vehicleTraits.headlampSpotAngle;
             }
             else
             {

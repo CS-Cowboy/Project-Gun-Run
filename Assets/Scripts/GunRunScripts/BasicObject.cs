@@ -3,7 +3,7 @@ using UnityEngine;
 namespace com.braineeeeDevs.gr
 {
     /// <summary>
-    /// A class to represent generic gameobjects which are poolable and require rigidbody physics, sound effects, and animations.
+    /// An abstract class to represent generic gameobjects which are poolable and require rigidbody physics, sound effects, and animations. Cannot be directly instantiated. You must derive from it to see it exist in game.
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(Animation))]
@@ -16,10 +16,25 @@ namespace com.braineeeeDevs.gr
         public ObjectAttributes traits;
         protected Animation animators;
         protected Rigidbody rbPhysics;
-        public Guid originPoolID;
-        public void Awake()
+        protected Guid id;
+        public Guid PoolID
         {
-            PoolController.CreateNewPoolFor(this);
+            get
+            {
+                return id;
+            }
+        }
+        public virtual void Awake()
+        {
+            if (traits.poolID == Guid.Empty.ToString() || traits.poolID == String.Empty)
+            {
+                id = Guid.NewGuid();
+                traits.poolID = id.ToString();
+            }
+            else
+            {
+                id = new Guid(traits.poolID);
+            }
         }
         public virtual void Start()
         {
@@ -58,11 +73,7 @@ namespace com.braineeeeDevs.gr
         public virtual void ReturnToPool()
         {
             gameObject.SetActive(false);
-            PoolController.ReturnObject(this);
-        }
-        public void OnDisable()
-        {
-            CameraController.AttachTo(null);
+            PoolHandler.GiveObject(this);
         }
     }
 }

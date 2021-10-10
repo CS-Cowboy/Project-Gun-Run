@@ -4,10 +4,12 @@ using UnityEngine;
 
 namespace com.braineeeeDevs.gr
 {
-    public class VehicleTraits : ObjectAttributes
+    [CreateAssetMenu()]
+    public class VehicleTraits : ScriptableObject
     {
 
-        public float foglampRange = 60f, foglampAngle = 45f, enginePower = 169.0f, finalDrive, suspensionDistance = 0.1f, forwardFrictionStiffness = 1.25f, sideFrictionStiffness = 1.15f, wheelMass = 20f, tachometerLimit = 8000.0f, wheelBaseLength, wheelBaseWidth, antiRollForce, turnRadius, idleSpeed = 20f;
+        public float brakingForce, highBeamRange, highbeamSpotAngle, headlampRange, headlampSpotAngle,foglampRange = 60f, foglampAngle = 45f, enginePower = 169.0f, finalDrive, suspensionDistance = 0.1f, forwardFrictionStiffness = 1.25f, sideFrictionStiffness = 1.15f, wheelMass = 20f, tachometerLimit = 8000.0f, wheelBaseLength, wheelBaseWidth, antiRollForce, turnRadius, idleSpeed = 20f;
+        public GameObject hudPrefab;
         /// <summary>
         /// In case of CVT
         /// </summary>
@@ -22,16 +24,13 @@ namespace com.braineeeeDevs.gr
 
         public float GetGearRatioFromTorque(float input)
         {
-
             if (gearSet.Length == gearTorques.Length)
             {
                 for (int c = 0; c < gearSet.Length - 1; c++)
                 {
-                    float inner = gearTorques[c];
-                    float outer = gearTorques[c + 1];
-                    if (input > inner)
+                    if (input < gearTorques[c])
                     {
-                        return outer;
+                        return gearSet[c];
                     }
                 }
             }

@@ -9,10 +9,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{805e796c-c8a2-c04a-1a01-5f04f88abfc5}</ProjectGuid>
+    <ProjectGuid>{822e07ed-6414-e8c6-d57c-6fb0d121d214}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>GunRunPlaymode</AssemblyName>
+    <AssemblyName>GunRunPlayMode</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -52,7 +52,6 @@
      <Compile Include="Assets\Scripts\GunRunScripts\ObjectPool.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\PlayerHUD.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Transmission.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\PoolController.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\CameraSettings.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\IRespawn.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\VehicleComponent.cs" />
@@ -63,10 +62,12 @@
      <Compile Include="Assets\Scripts\GunRunScripts\Weapon.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Projectile.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\IShoot.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\VehicleTraits.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Differential.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\IPlayEffects.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\VehicleTraits.cs" />
-     <None Include="Assets\Scripts\GunRunScripts\GunRunPlaymode.asmdef" />
+     <Compile Include="Assets\Scripts\GunRunScripts\ExampleObject.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\PoolHandler.cs" />
+     <None Include="Assets\Scripts\GunRunScripts\GunRunPlayMode.asmdef" />
     <Reference Include="UnityEngine">
         <HintPath>C:\Program Files\Unity\Hub\Editor\2021.1.22f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>

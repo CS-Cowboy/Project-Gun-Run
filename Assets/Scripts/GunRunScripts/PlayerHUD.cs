@@ -40,7 +40,7 @@ namespace com.braineeeeDevs.gr
                 tachometer = sliders[1];
                 lapTime = canvasInstance.GetComponentInChildren<UnityEngine.UI.Text>();
                 tachometer.maxValue = CameraController.playerControls.puppet.vehicleTraits.tachometerLimit;
-                speedometer.maxValue = CameraController.playerControls.puppet.vehicleTraits.topSpeed;
+                speedometer.maxValue = CameraController.playerControls.puppet.traits.topSpeed;
             }
             else
             {

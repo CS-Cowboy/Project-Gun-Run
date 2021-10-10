@@ -1,28 +1,26 @@
- using System.Collections;
-using System.Collections.Generic;
+
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
-namespace com.braineeeeDevs.gr
+namespace com.braineeeeDevs.gr.Tests
 {
     /*Tests player and vehicle*/
     public class TestVehicleAndCamera
     {
-        public GroundVehicle grndVehicle;
+        public GroundVehicle grndVehicle;   
         public Controller controls; 
         public CameraController cameraControls;
 
         public GameObject[] CreatePlayer()
         {
-            var vehicle = MonoBehaviour.Instantiate(Resources.Load<GameObject>("player_prefab").gameObject);
-            var cam = MonoBehaviour.Instantiate(Resources.Load<GameObject>("player_view").gameObject);
+            var vehicle = MonoBehaviour.Instantiate(Resources.Load("Ford-f-150(Clone) Variant")) as GameObject;
+            var cam = MonoBehaviour.Instantiate(Resources.Load("test_player_view")) as GameObject;
             return new GameObject[2] { vehicle, cam };
         }
         // A Test behaves as an ordinary method
         [Test]
         public void TestGroundVehicleIsNotNull()
         {
-            Assert.NotNull(grndVehicle);
+            Assert.IsNotNull(grndVehicle);
         }
 
         [Test]
@@ -34,19 +32,19 @@ namespace com.braineeeeDevs.gr
         [Test]
         public void TestGroundVehicleTraitsIsNotNull()
         {
-            Assert.NotNull(grndVehicle.vehicleTraits);
+            Assert.IsNotNull(grndVehicle.vehicleTraits);
 
         }
         [Test]
         public void TestGroundVehicleOrbiterIsNotNull()
         {
-            Assert.NotNull(grndVehicle.orbiter);
+            Assert.IsNotNull(grndVehicle.orbiter);
 
         }
         [Test]
         public void TestControlsAreNotNull()
         {
-            Assert.NotNull(controls);
+            Assert.IsNotNull(controls);
 
         }
 
@@ -54,7 +52,7 @@ namespace com.braineeeeDevs.gr
         public void TestControllerPuppetIsNotNull()
         {
             CameraController.AttachTo(grndVehicle);
-            Assert.NotNull(controls.puppet);
+            Assert.IsNotNull(controls.puppet);
             FullReset();
         }
 
@@ -62,26 +60,26 @@ namespace com.braineeeeDevs.gr
         [Test]
         public void TestCameraControllerIsNotNull()
         {
-            Assert.NotNull(cameraControls);
+            Assert.IsNotNull(cameraControls);
 
         }
 
         [Test]
         public void TestCameraControllerOrbiterIsNotnull()
         {
-            Assert.NotNull(CameraController.orbiter);
+            Assert.IsNotNull(CameraController.orbiter);
 
         }
         [Test]
         public void TestCameraControllerPlayerViewIsNotNull()
         {
-            Assert.NotNull(CameraController.playerCamera);
+            Assert.IsNotNull(CameraController.playerCamera);
 
         }
         [Test]
         public void TestCameraControllerPlayerControlsAreNotNull()
         {
-            Assert.NotNull(CameraController.playerControls);
+            Assert.IsNotNull(CameraController.playerControls);
 
         }
 
@@ -104,7 +102,7 @@ namespace com.braineeeeDevs.gr
         {
             for (int c = 0; c < grndVehicle.wheels.Length; c++)
             {
-                Assert.NotNull(grndVehicle.wheels[c], string.Format("{0}'th wheel is null", c));
+                Assert.IsNotNull(grndVehicle.wheels[c], string.Format("{0}'th wheel is null", c));
             }
         }
         [Test]
@@ -112,7 +110,7 @@ namespace com.braineeeeDevs.gr
         {
             for (int c = 0; c < grndVehicle.wheels.Length; c++)
             {
-                Assert.NotNull(grndVehicle.wheels[c].wheelCollider, string.Format("{0}'th wheel collider is null", c));
+                Assert.IsNotNull(grndVehicle.wheels[c].wheelCollider, string.Format("{0}'th wheel collider is null", c));
             }
         }
 
@@ -121,7 +119,7 @@ namespace com.braineeeeDevs.gr
         {
             for (int c = 0; c < grndVehicle.wheels.Length; c++)
             {
-                Assert.NotNull(grndVehicle.wheels[c].mesh, string.Format("{0}'th wheel mesh renderer is null", c));
+                Assert.IsNotNull(grndVehicle.wheels[c].mesh, string.Format("{0}'th wheel mesh renderer is null", c));
             }
         }
 
@@ -136,7 +134,7 @@ namespace com.braineeeeDevs.gr
         {
             for (int c = 0; c < grndVehicle.wheels.Length; c++)
             {
-                Assert.NotNull(grndVehicle.wheels[c].owner, string.Format("{0}'th wheel's owner is null", c));
+                Assert.IsNotNull(grndVehicle.wheels[c].owner, string.Format("{0}'th wheel's owner is null", c));
             }
         }
 
