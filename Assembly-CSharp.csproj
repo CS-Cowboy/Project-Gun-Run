@@ -36,7 +36,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Attributes\NewBehaviourScript.cs" />
+     <Compile Include="Assets\Scripts\Wheel.cs" />
      <None Include="Assets\Resources\ReadMeToImportModels.txt" />
     <Reference Include="UnityEngine">
         <HintPath>C:\Program Files\Unity\Hub\Editor\2021.1.22f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>

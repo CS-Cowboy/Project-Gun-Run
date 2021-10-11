@@ -11,15 +11,13 @@ namespace com.braineeeeDevs.gr.Editor
     public class VehicleWizard : ScriptableWizard
     {
         public string vehicleFilename = "Enter Value";
-        private uint wheelCount = 0;
         public bool isPlayer = true;
         private bool isComplete = false;
-        private GameObject newVehicle;
-        private GroundVehicle vehicle;
-        public ObjectAttributes traits;
-        public VehicleTraits attributes;
-        private Wheel firstTireMade, lastTireMade;
-        private Transform colliderChassis;
+        private Body vehicle;
+        public ComponentTraits attributes;
+        private Controller controller;
+        private Wheel firstTire, lastTire;
+        private Wheel[] tmpWheels = new Wheel[MathUtilities.wheelQuantity];
         static string wheelTag = "Wheel", colliderTag = "Collider";
         /// <summary>
         /// Used by the UnityEditor to      play a menu to use this class.
@@ -30,16 +28,15 @@ namespace com.braineeeeDevs.gr.Editor
             ScriptableWizard.DisplayWizard<VehicleWizard>("Import Vehicle Model", "Create");
         }
         /// <summary>
-        /// Builds the GroundVehicle gameObject from the imported model given in the "vehicleFileName" and a non-null "attributes" reference.
+        /// Builds the VehicleComponent gameObject from the imported model given in the "vehicleFileName" and a non-null "attributes" reference.
         /// </summary>
         protected void OnWizardCreate()
         {
-            if (vehicleFilename != "Enter Value" && attributes != null && traits != null)
+            if (vehicleFilename != "Enter Value" && attributes != null)
             {
                 GameObject obj = Resources.Load<GameObject>(vehicleFilename);
                 GameObject child = obj.transform.GetChild(0).gameObject; //Get first child of file.
-                newVehicle = Instantiate(child);
-                this.RigVehicle();
+                this.RigVehicle(Instantiate(child));
                 this.isComplete = true;
             }
         }
@@ -50,150 +47,132 @@ namespace com.braineeeeDevs.gr.Editor
         {
             if (!isComplete)
             {
-                DestroyImmediate(newVehicle);
+                DestroyImmediate(vehicle.gameObject);
             }
         }
         /// <summary>
-        /// Creates the appropriate components and attaches them to the new GroundVehicle gameObject.
+        /// Creates the appropriate components and attaches them to the new VehicleComponent gameObject.
         /// </summary>
-        protected void RigVehicle()
+        protected void RigVehicle(GameObject newVehicle)
         {
-            vehicle = newVehicle.AddComponent<GroundVehicle>();
-            vehicle.vehicleTraits = attributes;
-            vehicle.traits = traits;
+            vehicle = newVehicle.gameObject.AddComponent<Body>();
+            vehicle.Traits = attributes;
+            this.BuildPlayer();
 
-            if (this.BuildPlayer())
+            var colliderMeshes = this.GetSubMeshes("collider");
+            var wheelMeshes = this.GetSubMeshes("wheel");
+            var components = this.GetSubMeshes("component");
+            var headlightTransforms = this.GetTransforms("headlamp", false);
+            var foglightTransforms = this.GetTransforms("foglamp", true);
+
+            if (BuildWheelsFrom(wheelMeshes))
             {
-                colliderChassis = new GameObject("Collider_Chassis").transform;
-                colliderChassis.transform.SetParent(newVehicle.transform);
-                colliderChassis.transform.localPosition = Vector3.zero;
-                var subModels = newVehicle.GetComponentsInChildren<MeshRenderer>();
-                List<MeshRenderer> colliderMeshes = new List<MeshRenderer>();
-                List<MeshRenderer> wheelMeshes = new List<MeshRenderer>();
-                List<MeshRenderer> componentMeshes = new List<MeshRenderer>();
-                foreach (MeshRenderer mesh in subModels)
-                {
-                    string meshName = mesh.gameObject.name.ToLower();
-                    if (meshName.Contains("collider"))
-                    {
-                        colliderMeshes.Add(mesh);
-                    }
-                    else if (meshName.Contains("wheel"))
-                    {
-                        wheelMeshes.Add(mesh);
-                    }
-                    else if (meshName.Contains("component"))
-                    {
-                        componentMeshes.Add(mesh);
-                    }
-                }
-
-                vehicle.foglight = new Light[2];
-                vehicle.headlight = new Light[2];
-                foreach (Transform t in newVehicle.GetComponentsInChildren<Transform>())
-                {
-                    string transformName = t.name.ToLower();
-                    if (transformName.Contains("component"))
-                    {
-                        if (transformName.Contains("headlamp"))
-                        {
-                            if (vehicle.headlight[0] == null)
-                            {
-                                vehicle.headlight[0] = BuildLight(t.gameObject, false);
-                            }
-                            else if (vehicle.headlight[1] == null)
-                            {
-                                vehicle.headlight[0] = BuildLight(t.gameObject, false);
-                            }
-
-                        }
-                        else if (transformName.Contains("foglamp"))
-                        {
-                            if (vehicle.foglight[0] == null)
-                            {
-                                vehicle.foglight[0] = BuildLight(t.gameObject, true);
-                            }
-                            else if (vehicle.foglight[1] == null)
-                            {
-                                vehicle.foglight[1] = BuildLight(t.gameObject, true);
-                            }
-                        }
-                    }
-                }
-                if (BuildWheels(wheelMeshes))
-                {
-                    BuildComponents(componentMeshes);
-                    BuildColliders(colliderMeshes);
-                    Vector3 wheelBaseDiagonal = firstTireMade.transform.position - lastTireMade.transform.position;
-                    attributes.wheelBaseLength = Vector3.ProjectOnPlane(wheelBaseDiagonal, vehicle.transform.right).magnitude;
-                    attributes.wheelBaseWidth = Vector3.ProjectOnPlane(wheelBaseDiagonal, vehicle.transform.forward).magnitude;
-                    traits.topSpeed = MathUtilities.MetricTopSpeedWithDrag(attributes.engineSpeedToTorqueGearCurve.Evaluate(0f) * attributes.finalDrive / MathUtilities.wheelQuantity, traits.drag);
-
-                }
+                BuldLightsFrom(headlightTransforms, foglightTransforms);
+                BuildComponentsFrom(components);
+                BuildCollidersFrom(colliderMeshes);
+                Vector3 wheelBaseDiagonal = firstTire.transform.position - lastTire.transform.position;
+                attributes.wheelBaseLength = Vector3.ProjectOnPlane(wheelBaseDiagonal, vehicle.transform.right).magnitude;
+                attributes.wheelBaseWidth = Vector3.ProjectOnPlane(wheelBaseDiagonal, vehicle.transform.forward).magnitude;
             }
         }
+
+        public List<MeshRenderer> GetSubMeshes(string lowercaseName)
+        {
+            var subMeshes = vehicle.gameObject.GetComponentsInChildren<MeshRenderer>();
+            List<MeshRenderer> meshes = new List<MeshRenderer>();
+            foreach (MeshRenderer mesh in subMeshes)
+            {
+                string meshName = mesh.gameObject.name.ToLower();
+                if (meshName.Contains(lowercaseName))
+                {
+                    meshes.Add(mesh);
+                }
+            }
+            return meshes;
+        }
+
+        public List<Transform> GetTransforms(string name, bool isFoglamp)
+        {
+            List<Transform> transforms = new List<Transform>();
+            foreach (Transform t in vehicle.gameObject.GetComponentsInChildren<Transform>())
+            {
+                string transformName = t.name.ToLower();
+                if (transformName.Contains("component") && transformName.Contains(name))
+                {
+                    transforms.Add(t);
+                }
+            }
+            return transforms;
+        }
+
+        public void BuldLightsFrom(List<Transform> headlightTransforms, List<Transform> foglightTransforms)
+        {
+            int length = headlightTransforms.Count == foglightTransforms.Count ? headlightTransforms.Count : 0;
+            for (int c = 0; c < length; c++)
+            {
+                Transform fog = foglightTransforms[c], head = headlightTransforms[c];
+                BuildLight(fog.gameObject, true);
+                BuildLight(head.gameObject, false);
+            }
+        }
+
         /// <summary>
         /// Builds the player if isPlayer is checked.
         /// </summary>
         /// <returns>A bool representing success (with true) or failure (with false).</returns>
-        protected bool BuildPlayer()
+        protected void BuildPlayer()
         {
-            var camera = newVehicle.GetComponentInChildren<Camera>();
-
+            var camera = vehicle.gameObject.GetComponentInChildren<Camera>();
+            vehicle.isPlayer = isPlayer;
+            vehicle.GetComponent<MeshCollider>().convex = true;
             if (isPlayer)
             {
                 camera.usePhysicalProperties = false;
                 camera.fieldOfView = 60f;
                 camera.nearClipPlane = 0f;
                 camera.farClipPlane = 10000f;
-                var controller = camera.gameObject.AddComponent<Controller>();
+                controller = camera.gameObject.AddComponent<Controller>();
                 var cameraControls = camera.gameObject.AddComponent<CameraController>();
-                vehicle.orbiter = camera.transform.parent;
-                controller.puppet = vehicle;
-                vehicle.orbiter.localRotation = camera.transform.localRotation = Quaternion.identity;
+                cameraControls.settings = attributes.cameraTraits;
+                vehicle.Orbiter = camera.transform.parent;
+                controller.target = vehicle;
+                vehicle.Orbiter.localRotation = camera.transform.localRotation = Quaternion.identity;
                 camera.transform.localPosition = new Vector3(0f, 2f, -6f);
-                if (vehicle.vehicleTraits.hudPrefab != null)
+                if (vehicle.Traits.hudPrefab != null)
                 {
-                    var hudInstance = Instantiate(vehicle.vehicleTraits.hudPrefab);
+                    var hudInstance = Instantiate(vehicle.Traits.hudPrefab);
                     hudInstance.transform.SetParent(camera.transform);
-                }
-                else
-                {
-                    Debug.LogError("Model import failed, because the OjbectAttributes supplied has not set the 'HudPrefab' variable.");
-                    isComplete = false;
-                    return false;
                 }
             }
             else
             {
                 DestroyImmediate(camera);
             }
-            vehicle.isPlayer = isPlayer;
-            return true;
         }
         /// <summary>
         /// Builds the wheels.
         /// </summary>
         /// <param name="meshes">The meshes which are to represent the wheels.</param>
         /// <returns>A bool representing success (with true) or failure (with false).</returns>
-        protected bool BuildWheels(List<MeshRenderer> meshes)
+        protected bool BuildWheelsFrom(List<MeshRenderer> meshes)
         {
-            vehicle.wheels = new Wheel[MathUtilities.wheelQuantity];
-            Wheel leftWhl = null, rightWhl = null;
+            Wheel whl = null;
             if (meshes.Count == MathUtilities.wheelQuantity && meshes.Count % 2 == 0)
             {
-                for (int c = 0; c < meshes.Count; c += 2)
+                for (int c = 0; c < meshes.Count; c++)
                 {
-                    leftWhl = BuildWheel(meshes[c]);
-                    rightWhl = BuildWheel(meshes[c + 1]);
+                    whl = BuildWheel(meshes[c]);
+                    whl.Traits = attributes;
                     if (c == 0)
                     {
-                        firstTireMade = leftWhl;
+                        firstTire = whl;
                     }
-                    vehicle.wheels[c] = leftWhl;
-                    vehicle.wheels[c + 1] = rightWhl;
+                    tmpWheels[c] = whl;
+                    var brake =whl.transform.parent.gameObject.AddComponent<Brake>();
+                    brake.Target = whl;
+                    brake.Traits = attributes;
                 }
-                lastTireMade = rightWhl;
+                lastTire = whl;
 
             }
             else
@@ -205,7 +184,7 @@ namespace com.braineeeeDevs.gr.Editor
             return true;
         }
 
-        public void BuildComponents(List<MeshRenderer> meshes)
+        public void BuildComponentsFrom(List<MeshRenderer> meshes)
         {
             string meshName = "";
             foreach (MeshRenderer mesh in meshes)
@@ -213,62 +192,57 @@ namespace com.braineeeeDevs.gr.Editor
                 meshName = mesh.name.ToLower();
                 if (meshName.Contains("differential"))
                 {
-                    if (vehicle.front_differential == null)
+                    var diff = mesh.gameObject.AddComponent<Differential>();
+                    if (meshName.Contains("front"))
                     {
-                        vehicle.front_differential = mesh.gameObject.AddComponent<Differential>();
-                        vehicle.front_differential.owner = vehicle;
+                        diff.left = tmpWheels[0];
+                        diff.right = tmpWheels[1];
                     }
                     else
                     {
-                        vehicle.rear_differential = mesh.gameObject.AddComponent<Differential>();
-                        vehicle.rear_differential.owner = vehicle;
-                        }
-
+                        diff.left = tmpWheels[2];
+                        diff.right = tmpWheels[3];
+                    }
+                    diff.Traits = attributes;
                 }
                 else if (meshName.Contains("engine"))
                 {
-                    vehicle.engine = mesh.gameObject.AddComponent<Engine>();
-                    vehicle.engine.owner = vehicle;
+                    controller.engine = mesh.gameObject.AddComponent<Engine>();
+                    controller.engine.Traits = attributes;
+                    controller.engine.engTraits = attributes.engineTraits;
                 }
                 else if (meshName.Contains("transmission"))
                 {
-                    vehicle.transmission = mesh.gameObject.AddComponent<Transmission>();
-                    vehicle.transmission.owner = vehicle;
+                    controller.transmission = mesh.gameObject.AddComponent<Transmission>();
+                    controller.transmission.Traits = attributes;
+                    controller.transmission.trans = attributes.trannyTraits;
                 }
                 else if (meshName.Contains("swaybar"))
                 {
-                    if (vehicle.front_swaybar == null)
-                    {
-                        vehicle.front_swaybar = mesh.gameObject.AddComponent<SwayBar>();
-                        vehicle.front_swaybar.owner = vehicle;
-                        vehicle.front_swaybar.left = vehicle.wheels[0];
-                        vehicle.front_swaybar.right = vehicle.wheels[1];
-                    }
-                    else
-                    {
-                        vehicle.rear_swaybar = mesh.gameObject.AddComponent<SwayBar>();
-                        vehicle.rear_swaybar.owner = vehicle;
-                        vehicle.rear_swaybar.left = vehicle.wheels[2];
-                        vehicle.rear_swaybar.right = vehicle.wheels[3];
-                    }
+                    var swaybar = mesh.gameObject.AddComponent<SwayBar>();
+                    swaybar.Traits = attributes;
+                    swaybar.Wheels = new Wheel[2] { tmpWheels[0], tmpWheels[1] };
+                } else if(meshName.Contains("steering"))
+                {
+                    var steering = mesh.gameObject.AddComponent<SteeringMechanism>();
+                    steering.Left = tmpWheels[0];
+                    steering.Right = tmpWheels[1];
+                    controller.steeringMechanism = steering;
                 }
+                var meshCollider = mesh.GetComponent<MeshCollider>();
+                meshCollider.convex = true;
+                meshCollider.transform.localScale = Vector3.one * 0.97f;
             }
         }
         protected Light BuildLight(GameObject obj, bool isFogLamp)
         {
             var lamp = obj.AddComponent<Light>();
-            if (!isFogLamp)
-            {
-                lamp.range = vehicle.vehicleTraits.headlampRange;
-                lamp.spotAngle = vehicle.vehicleTraits.headlampSpotAngle;
-            }
-            else
-            {
-                lamp.range = vehicle.vehicleTraits.foglampRange;
-                lamp.spotAngle = vehicle.vehicleTraits.foglampAngle;
-            }
+            lamp.range = !isFogLamp ? vehicle.Traits.headlampRange : vehicle.Traits.foglampRange;
+            lamp.spotAngle = !isFogLamp ? vehicle.Traits.headlampSpotAngle : vehicle.Traits.foglampAngle;
             lamp.lightmapBakeType = LightmapBakeType.Mixed;
+            lamp.type = LightType.Spot;
             lamp.renderMode = LightRenderMode.Auto;
+            lamp.transform.rotation = Quaternion.LookRotation(vehicle.transform.forward, Vector3.up) * (isFogLamp ? Quaternion.Euler(attributes.foglampAxisAngle, 0f, 0f) : Quaternion.Euler(attributes.headlampAxisAngle, 0f, 0f));
             return lamp;
         }
         /// <summary>
@@ -280,8 +254,10 @@ namespace com.braineeeeDevs.gr.Editor
         {
             var newWheel = mesh.gameObject.AddComponent<Wheel>();
             var colliderObject = new GameObject("[Collider]");
-            newWheel.owner = vehicle;
             newWheel.mesh = mesh;
+            var collider = newWheel.gameObject.GetComponent<MeshCollider>();
+            collider.convex = true;
+            collider.transform.localScale = Vector3.one * 0.97f;
             colliderObject.name = mesh.gameObject.name + colliderObject.name;
             newWheel.Collider = colliderObject.AddComponent<WheelCollider>();
             newWheel.Collider.radius = GetTireSize(mesh, newWheel);
@@ -290,11 +266,11 @@ namespace com.braineeeeDevs.gr.Editor
             friction.extremumValue = 1f;
             friction.asymptoteSlip = 0.8f;
             friction.asymptoteValue = 0.5f;
-            friction.stiffness = vehicle.vehicleTraits.forwardFrictionStiffness;
-            newWheel.Collider.suspensionDistance = vehicle.vehicleTraits.suspensionDistance;
+            friction.stiffness = vehicle.Traits.forwardFrictionStiffness;
+            newWheel.Collider.suspensionDistance = vehicle.Traits.suspensionDistance;
             newWheel.Collider.forwardFriction = friction;
 
-            friction.stiffness = vehicle.vehicleTraits.sideFrictionStiffness;
+            friction.stiffness = vehicle.Traits.sideFrictionStiffness;
             newWheel.Collider.sidewaysFriction = friction;
             //Set tags
             newWheel.Collider.tag = colliderTag;
@@ -304,12 +280,6 @@ namespace com.braineeeeDevs.gr.Editor
             colliderObject.transform.SetParent(mesh.transform.parent.parent);
             colliderObject.transform.position = mesh.transform.parent.position;
             colliderObject.transform.rotation = mesh.transform.parent.rotation;
-
-            if (wheelCount < MathUtilities.wheelQuantity)
-            {
-                wheelCount++;
-                newWheel.wheelNumber = wheelCount;
-            }
 
             return newWheel;
         }
@@ -326,14 +296,14 @@ namespace com.braineeeeDevs.gr.Editor
             x = tireDimensions.x;
             y = tireDimensions.y;
             z = tireDimensions.z;
-            target.tireDiameterInMeters = Mathf.Max(x, y, z);
-            return target.tireDiameterInMeters * 0.5f;
+            target.tireDiameter = Mathf.Max(x, y, z);
+            return target.tireDiameter * 0.5f;
         }
         /// <summary>
-        /// Builds the collider objects for the GroundVehicle. These colliders are used in determing center of mass for the vehicle.
+        /// Builds the collider objects for the VehicleComponent. These colliders are used in determing center of mass for the vehicle.
         /// </summary>
         /// <param name="meshes">The meshes which are to represent the colliders, which will be invisible.</param>
-        protected void BuildColliders(List<MeshRenderer> meshes)
+        protected void BuildCollidersFrom(List<MeshRenderer> meshes)
         {
             if (meshes.Count > 0)
             {
@@ -346,7 +316,7 @@ namespace com.braineeeeDevs.gr.Editor
             else
             {
                 Debug.LogWarning("Model did not contain any named collider meshes. Defaulting to a convex mesh collider.");
-                newVehicle.AddComponent<MeshCollider>().convex = true;
+                vehicle.gameObject.AddComponent<MeshCollider>().convex = true;
             }
 
         }

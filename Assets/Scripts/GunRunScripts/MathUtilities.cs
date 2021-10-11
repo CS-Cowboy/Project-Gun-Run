@@ -2,7 +2,7 @@ using UnityEngine;
 public static class MathUtilities
 {
     public static float metersPerSecToKPH = 0.0036f, Nm2Kwatts = 1000.0f * 9.5488f;/*  */
-    public const uint wheelQuantity = 4;
+    public const int wheelQuantity = 4;
 
     /// <summary>
     /// Returns the computed rate of revolution (rev/min).

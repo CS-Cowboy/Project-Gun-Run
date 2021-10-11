@@ -6,15 +6,15 @@ namespace com.braineeeeDevs.gr
 {
 
     /// <summary>
-    /// A class form pooling objects. Ideally you use this for one sort of gameobject at a time (don't mix gameObjects that are different in terms of gameplay but are derived from BasicObject).
-    /// Ie. you have an enemy called "Jackyl", and an enemy called "Elefann", both of which derive from BasicObject but are two distinct enemies.   
+    /// A class form pooling objects. Ideally you use this for one sort of gameobject at a time (don't mix gameObjects that are different in terms of gameplay but are derived from VehicleComponent).
+    /// Ie. you have an enemy called "Jackyl", and an enemy called "Elefann", both of which derive from VehicleComponent but are two distinct enemies.   
     /// /// </summary>
     public class ObjectPool : MonoBehaviour
     {
         public uint capacity = 100;
         private Guid id = Guid.Empty;
-        protected BasicObject prefab;
-        protected Stack<BasicObject> objects = new Stack<BasicObject>();
+        protected VehicleComponent prefab;
+        protected Stack<VehicleComponent> objects = new Stack<VehicleComponent>();
         public Guid ID
         {
             get
@@ -34,12 +34,12 @@ namespace com.braineeeeDevs.gr
         /// Gives the pooler an ID and a prefab. It is important to call this at least once somewhere to make the pooler usable.
         /// </summary>
         /// <param name="obj">The object this pool will use.</param>
-        public void AssignPrefab(BasicObject obj)
+        public void AssignPrefab(VehicleComponent obj)
         {
             if (id == Guid.Empty)
             {
                 prefab = obj;
-                capacity = prefab.traits.poolCapacity;
+                capacity = prefab.Traits.poolCapacity;
                 id = obj.PoolID;
             }
             else
@@ -51,7 +51,7 @@ namespace com.braineeeeDevs.gr
         /// Puts an object back into the pool or destroys it if pool is at capacity. Logs a warning if AssignPrefab() has not been called.
         /// </summary>
         /// <param name="obj">The object to put back.</param>
-        public void Give(BasicObject obj)
+        public void Give(VehicleComponent obj)
         {
             if (id != Guid.Empty)
             {
@@ -75,9 +75,9 @@ namespace com.braineeeeDevs.gr
         /// Retrieves an object from the pool, or creates one if pool is empty. Returns null if AssignPrefab() has not been called.
         /// </summary>
         /// <returns>A BaseObject instance.</returns>
-        public BasicObject GetObject()
+        public VehicleComponent GetObject(Transform where)
         {
-            BasicObject obj = null;
+            VehicleComponent obj = null;
             if (id != Guid.Empty)
             {
                 if (objects.Count > 0)
@@ -86,8 +86,10 @@ namespace com.braineeeeDevs.gr
                 }
                 else
                 {
-                    obj = Instantiate(prefab).GetComponent<BasicObject>();
+                    obj = Instantiate(prefab).GetComponent<VehicleComponent>();
                 }
+                obj.transform.position = where.position;
+                obj.transform.rotation = where.rotation;
             }
             else
             {

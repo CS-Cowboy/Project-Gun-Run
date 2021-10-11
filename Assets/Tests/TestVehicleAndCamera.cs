@@ -6,8 +6,8 @@ namespace com.braineeeeDevs.gr.Tests
     /*Tests player and vehicle*/
     public class TestVehicleAndCamera
     {
-        public GroundVehicle grndVehicle;   
-        public Controller controls; 
+        public Body groundVehicle;
+        public Controller controls;
         public CameraController cameraControls;
 
         public GameObject[] CreatePlayer()
@@ -18,27 +18,27 @@ namespace com.braineeeeDevs.gr.Tests
         }
         // A Test behaves as an ordinary method
         [Test]
-        public void TestGroundVehicleIsNotNull()
+        public void TestVehicleComponentIsNotNull()
         {
-            Assert.IsNotNull(grndVehicle);
+            Assert.IsNotNull(groundVehicle);
         }
 
         [Test]
-        public void TestGroundVehicleIsActiveAndEnabled()
+        public void TestVehicleComponentIsActiveAndEnabled()
         {
-            Assert.IsTrue(grndVehicle.gameObject.activeSelf);
+            Assert.IsTrue(groundVehicle.gameObject.activeSelf);
 
         }
         [Test]
-        public void TestGroundVehicleTraitsIsNotNull()
+        public void TestVehicleComponentTraitsIsNotNull()
         {
-            Assert.IsNotNull(grndVehicle.vehicleTraits);
+            Assert.IsNotNull(groundVehicle.Traits);
 
         }
         [Test]
-        public void TestGroundVehicleOrbiterIsNotNull()
+        public void TestVehicleComponentOrbiterIsNotNull()
         {
-            Assert.IsNotNull(grndVehicle.orbiter);
+            Assert.IsNotNull(groundVehicle.Orbiter);
 
         }
         [Test]
@@ -51,8 +51,8 @@ namespace com.braineeeeDevs.gr.Tests
         [Test]
         public void TestControllerPuppetIsNotNull()
         {
-            CameraController.AttachTo(grndVehicle);
-            Assert.IsNotNull(controls.puppet);
+            CameraController.cameraControls.AttachTo(groundVehicle);
+            Assert.IsNotNull(controls.target);
             FullReset();
         }
 
@@ -67,75 +67,28 @@ namespace com.braineeeeDevs.gr.Tests
         [Test]
         public void TestCameraControllerOrbiterIsNotnull()
         {
-            Assert.IsNotNull(CameraController.orbiter);
 
         }
         [Test]
         public void TestCameraControllerPlayerViewIsNotNull()
         {
-            Assert.IsNotNull(CameraController.playerCamera);
+            Assert.IsNotNull(CameraController.cameraControls.playerCamera);
 
         }
         [Test]
         public void TestCameraControllerPlayerControlsAreNotNull()
         {
-            Assert.IsNotNull(CameraController.playerControls);
+            Assert.IsNotNull(CameraController.cameraControls.playerControls);
 
         }
 
         [Test]
-        public void TestCameraControllerAttachesToGroundVehicle()
+        public void TestCameraControllerAttachesToVehicleComponent()
         {
-            CameraController.AttachTo(null);
-            CameraController.AttachTo(grndVehicle);
-            Assert.AreEqual(CameraController.playerControls.puppet, grndVehicle);
+            CameraController.cameraControls.AttachTo(null);
+            CameraController.cameraControls.AttachTo(groundVehicle);
+            Assert.AreEqual(CameraController.cameraControls.playerControls.target, groundVehicle);
             FullReset();
-        }
-
-        [Test]
-        public void TestGroundVehicleWheelsDSIsFull()
-        {
-            Assert.AreEqual(grndVehicle.wheels.Length, MathUtilities.wheelQuantity);
-        }
-        [Test]
-        public void TestGroundVehicleWheelsAreNotNull()
-        {
-            for (int c = 0; c < grndVehicle.wheels.Length; c++)
-            {
-                Assert.IsNotNull(grndVehicle.wheels[c], string.Format("{0}'th wheel is null", c));
-            }
-        }
-        [Test]
-        public void TestGroundVehicleWheelsMeshColliderIsNotNull()
-        {
-            for (int c = 0; c < grndVehicle.wheels.Length; c++)
-            {
-                Assert.IsNotNull(grndVehicle.wheels[c].Collider, string.Format("{0}'th wheel collider is null", c));
-            }
-        }
-
-        [Test]
-        public void TestGroundVehicleWheelsMeshRendererIsNotNull()
-        {
-            for (int c = 0; c < grndVehicle.wheels.Length; c++)
-            {
-                Assert.IsNotNull(grndVehicle.wheels[c].mesh, string.Format("{0}'th wheel mesh renderer is null", c));
-            }
-        }
-
-        [Test]
-        public void TestGroundVehiclesWheelsOpposingTiresAreEqual()
-        {
-            //Broken currently.
-        }
-
-        [Test]
-        public void TestGroundVehiclesWheelsOwnerIsNotNull()
-        {
-            for (int c = 0; c < grndVehicle.wheels.Length; c++)
-            {
-                Assert.IsNotNull(grndVehicle.wheels[c].owner, string.Format("{0}'th wheel's owner is null", c));
-            }
         }
 
         public void FullReset()
@@ -148,7 +101,7 @@ namespace com.braineeeeDevs.gr.Tests
         [TearDown]
         public void TearDown()
         {
-            GameObject.Destroy(grndVehicle.gameObject);
+            GameObject.Destroy(groundVehicle.gameObject);
             GameObject.Destroy(cameraControls.gameObject);
         }
         [SetUp]
@@ -157,7 +110,7 @@ namespace com.braineeeeDevs.gr.Tests
             var vehicle = CreatePlayer();
             if (vehicle[0] != null)
             {
-                grndVehicle = vehicle[0].GetComponent<GroundVehicle>();
+                groundVehicle = vehicle[0].GetComponent<Body>();
             }
             if (vehicle[1] != null)
             {

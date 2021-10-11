@@ -12,11 +12,10 @@ namespace com.braineeeeDevs.gr.Tests
         /// Creates one instance of "example" from your Resources folder.
         /// </summary>
         /// <returns></returns>     
-        public ExampleObject CreateObjectWith(string prefabName, System.Guid id)
+        public VehicleComponent CreateObjectWith(string prefabName, System.Guid id)
         {
-            var newObj = (MonoBehaviour.Instantiate(Resources.Load(prefabName)) as GameObject).GetComponent<ExampleObject>();
-            newObj.traits.poolID = id.ToString();
-            newObj.Awake();
+            var newObj = (MonoBehaviour.Instantiate(Resources.Load(prefabName)) as GameObject).GetComponent<VehicleComponent>();
+            newObj.Traits.poolID = id.ToString();
             return newObj;
         }
         [TearDown]
@@ -45,7 +44,7 @@ namespace com.braineeeeDevs.gr.Tests
         {
             Setup();
             var first = CreateObjectWith("example", System.Guid.NewGuid());
-            var second = CreateObjectWith("example", new System.Guid(first.traits.poolID));
+            var second = CreateObjectWith("example", new System.Guid(first.Traits.poolID));
             PoolHandler.GiveObject(first);
             PoolHandler.GiveObject(second);
             Assert.IsTrue(handler.GetQuantityOfObjectsPooledByID(second.PoolID) == 2, "PoolHandler has failed to pool objects with the same ID together.");
@@ -69,7 +68,7 @@ namespace com.braineeeeDevs.gr.Tests
             Setup();
             var obj = CreateObjectWith("example", System.Guid.NewGuid());
             PoolHandler.GiveObject(obj);
-            var result = PoolHandler.GetObject(obj.PoolID);
+            var result = PoolHandler.GetObject(obj.PoolID, obj.transform);
             Assert.IsNotNull(result, "PoolHandler has failed to add a new pool for given object.");
             TearDown();
         }

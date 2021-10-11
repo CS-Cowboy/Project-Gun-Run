@@ -36,40 +36,30 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\GunRunScripts\CharacterAttributes.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\ITakeDamage.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\ObjectAttributes.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\IApplyControlForce.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\TransmissionTraits.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\ComponentTraits.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Controller.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\BasicObject.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\ISubscribe.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\SteeringMechanism.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Calculus.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\Engine.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\IPublish.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\Character.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\GroundVehicle.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\EngineTraits.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\ObjectPool.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\ExampleObject.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\PlayerHUD.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Transmission.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\CameraSettings.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\IRespawn.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\Body.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\Engine.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\VehicleComponent.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\Inventory.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\MathUtilities.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\SwayBar.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Wheel.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\Weapon.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\Projectile.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\IShoot.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\PoolHandler.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\VehicleTraits.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\Differential.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\IPlayEffects.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\ComponentTraits.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\IShowDamage.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\Brake.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\PoolHandler.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\Differential.cs" />
      <None Include="Assets\Scripts\GunRunScripts\GunRunPlayMode.asmdef" />
+     <None Include="Assets\Scripts\GunRunScripts\Untitled-1.txt" />
     <Reference Include="UnityEngine">
         <HintPath>C:\Program Files\Unity\Hub\Editor\2021.1.22f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>

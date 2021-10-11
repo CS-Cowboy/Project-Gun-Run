@@ -6,7 +6,7 @@ namespace com.braineeeeDevs.gr.Tests
 {
     public class TestPoolers
     {
-        public ExampleObject newObject;
+        public VehicleComponent newObject;
         public ObjectPool pool;
         /// <summary>
         /// Loads the pool to capacity.
@@ -22,10 +22,10 @@ namespace com.braineeeeDevs.gr.Tests
         /// Creates one instance of "example" from your Resources folder.
         /// </summary>
         /// <returns></returns>
-        public ExampleObject CreateObject()
+        public VehicleComponent CreateObject()
         {
-            var exObj = (MonoBehaviour.Instantiate(Resources.Load("example")) as GameObject).GetComponent<ExampleObject>();
-            exObj.traits.poolID = System.Guid.Empty.ToString();
+            var exObj = (MonoBehaviour.Instantiate(Resources.Load("example")) as GameObject).GetComponent<VehicleComponent>();
+            exObj.Traits.poolID = System.Guid.Empty.ToString();
             return exObj;
         }
         [TearDown]
@@ -67,7 +67,7 @@ namespace com.braineeeeDevs.gr.Tests
         public void TestGetMethod()
         {
             Setup();
-            newObject = pool.GetObject() as ExampleObject;
+            newObject = pool.GetObject(newObject.transform) as VehicleComponent;
             Assert.IsNotNull(newObject, "ObjectPool has failed to retrieve an object.");
             TearDown();
 
@@ -77,7 +77,7 @@ namespace com.braineeeeDevs.gr.Tests
         {
             Setup();
             pool.Give(newObject);
-            var gottenObj = pool.GetObject();
+            var gottenObj = pool.GetObject(newObject.transform);
             Assert.IsTrue(pool.Count == 0, "ObjectPool has failed to store and retrieve an object.");
             TearDown();
         }
@@ -88,17 +88,17 @@ namespace com.braineeeeDevs.gr.Tests
             LoadPool();
             //Do this once more and return to achieve test.
             pool.Give(CreateObject());
-            Assert.IsTrue(pool.Count == newObject.traits.poolCapacity, "ObjectPool has failed to limit its capacity.");
+            Assert.IsTrue(pool.Count == newObject.Traits.poolCapacity, "ObjectPool has failed to limit its capacity.");
             TearDown();
 
         }
         [Test]
         public void TestPooledObjectWasDestroyedAfterReachingCapacity()
-        {   
+        {
             Setup();
             LoadPool();
             //Do this once more to achieve test.
-            ExampleObject extra = CreateObject();
+            VehicleComponent extra = CreateObject();
             pool.Give(extra);
             Assert.IsNotNull(extra, "ObjectPool has failed to destroy the extra object.");
             TearDown();

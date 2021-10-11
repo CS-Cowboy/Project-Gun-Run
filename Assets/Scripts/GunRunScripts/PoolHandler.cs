@@ -52,12 +52,12 @@ namespace com.braineeeeDevs.gr
             return pools[id].Count > 0;
         }
         /// <summary>
-        /// Returns a BasicObject derived object to it associated pool.
+        /// Returns a VehicleComponent derived object to it associated pool.
         /// </summary>
         /// <param name="obj">The object to put away.</param>
-        public static void GiveObject(BasicObject obj)
+        public static void GiveObject(VehicleComponent obj)
         {
-            if (obj.PoolID != Guid.Empty)
+            if (obj.PoolID != Guid.Empty)       
             {
                 if (pools.ContainsKey(obj.PoolID))
                 {
@@ -77,7 +77,7 @@ namespace com.braineeeeDevs.gr
         /// Creates the pool for a new object and puts the new object in it.
         /// </summary>
         /// <param name="obj">The object to generate a new pool for.</param>                
-        protected static void CreateNewPoolFor(BasicObject obj)
+        protected static void CreateNewPoolFor(VehicleComponent obj)
         {
             var newPool = GameObject.CreatePrimitive(PrimitiveType.Sphere).AddComponent<ObjectPool>();
             newPool.GetComponent<MeshRenderer>().enabled = false; //Force invisible objectPooler. Don't want to distract our gamers with random spheres appearing!
@@ -90,13 +90,13 @@ namespace com.braineeeeDevs.gr
         /// </summary>
         /// <param name="id">The Guid of the object you wish to get a clone of.</param>
         /// <returns>An object from the associated pool. Null if this class has never been given an instance of the desired object.</returns>
-        public static BasicObject GetObject(Guid id)
+        public static VehicleComponent GetObject(Guid id, Transform where)
         {
             if (id != Guid.Empty)
             {
                 if (pools.ContainsKey(id))
                 {
-                    return pools[id].GetObject();
+                    return pools[id].GetObject(where);
                 }
                 else
                 {

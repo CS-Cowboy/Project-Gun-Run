@@ -9,12 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8628dfc49d9ae9488de0bee3488f734, type: 3}
-  m_Name: ModernTruck 1
+  m_Script: {fileID: 11500000, guid: a9fb1ef278076124ba0b24f8581cd8f5, type: 3}
+  m_Name: Engine1
   m_EditorClassIdentifier: 
-  topSpeed: 167
-  mass: 1817
-  drag: 0.2
-  fireDelayTime: 0
-  reloadDelayTime: 0
-  poolCapacity: 5
+  idleSpeed: 500
+  tachometerLimit: 6000
+  power: 350

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93d202942b1d521439a801c636015bc3, type: 3}
   m_Name: PlayerCamera
   m_EditorClassIdentifier: 
+  localPositionAtStart: {x: 0, y: 2, z: -7}
   cameraAngle: 60
   focusLength: 10000
   innerFocus: 1
