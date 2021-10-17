@@ -17,7 +17,7 @@ namespace com.braineeeeDevs.gr
         public float steering, driving, roll = 0f;
         public bool applyBrakes, toggleLights = false, toggleFogLights = false, toggleParkState = false;
 
-        protected struct Brakes
+        public struct Brakes
         {
             public Brake[] brks;
             public void Apply()
@@ -41,16 +41,31 @@ namespace com.braineeeeDevs.gr
 
         protected Brakes brakes;
         protected Headlights lamps, foglamps;
-
+        public Brakes WheelBrakes
+        {
+            get
+            {
+                return brakes;
+            }
+        }
+        public Headlights Lamps
+        {
+            get
+            {
+                return lamps;
+            }
+        }
+        public Headlights FogLamps
+        {
+            get
+            {
+                return foglamps;
+            }
+        }
         public void AssignTarget(Body obj)
         {
             target = obj;
             var wheels = obj.GetComponentsInChildren<Wheel>();
-            var colliders =  obj.GetComponentsInChildren<WheelCollider>();
-            wheels[0].Collider = colliders[0];
-            wheels[1].Collider = colliders[1];
-            wheels[2].Collider = colliders[2];
-            wheels[3].Collider = colliders[3];
             engine = obj.GetComponentInChildren<Engine>();
             transmission = obj.GetComponentInChildren<Transmission>();
             brakes = new Brakes { brks = obj.GetComponentsInChildren<Brake>() };
@@ -89,7 +104,7 @@ namespace com.braineeeeDevs.gr
             if (applyBrakes)
             {
                 brakes.Apply();
-            }   
+            }
             if (toggleLights)
             {
                 lamps.ToggleState();

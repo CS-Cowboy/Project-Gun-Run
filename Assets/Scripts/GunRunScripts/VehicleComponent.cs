@@ -14,11 +14,22 @@ namespace com.braineeeeDevs.gr
     public abstract class VehicleComponent : MonoBehaviour
     {
         [SerializeField] protected Controller owner;
-        protected float hits = 0f, effectiveness = 1f;
+        [SerializeField] protected float hits = 0f, effectiveness = 1f;
         [SerializeField] protected ComponentTraits componentTraits;
 
         protected Animation animators;
         protected Guid id;
+        public Controller Owner
+        {
+            get
+            {
+                return owner;
+            }
+            set
+            {
+                owner = value;
+            }
+        }
         public Guid PoolID
         {
             get
@@ -37,6 +48,13 @@ namespace com.braineeeeDevs.gr
                 componentTraits = value;
             }
         }
+        public float Effectiveness
+        {
+            get
+            {
+                return effectiveness;
+            }
+        }
         /// <summary>
         /// Called before Start(). Make sure to call this if you override it, it performs important tasks.
         /// </summary>
@@ -48,6 +66,11 @@ namespace com.braineeeeDevs.gr
             {
                 m.mesh = componentTraits.mesh;
             }
+            InitializeID();
+            animators = GetComponent<Animation>();
+        }
+        public void InitializeID()
+        {
 
             if (componentTraits.poolID == Guid.Empty.ToString() || componentTraits.poolID == String.Empty)
             {
@@ -58,7 +81,6 @@ namespace com.braineeeeDevs.gr
             {
                 id = new Guid(componentTraits.poolID);
             }
-            animators = GetComponent<Animation>();
         }
         /// <summary>
         /// Used by other components up the input line to drive this component. Always call this on your main object from your controller.
@@ -66,51 +88,42 @@ namespace com.braineeeeDevs.gr
         /// <param name="delta">The change in the quantity this component is to control.</param>
         public virtual void Operate(Vector3 inputChange)
         {
-            EvaluateHits();
         }
 
         public virtual void Operate(float input)
         {
-            EvaluateHits();
         }
 
         public virtual void Operate()
         {
-            EvaluateHits();
         }
 
         /// <summary>
         /// Virtual method. Use for playing an animation.
-        /// </summary>
+        /// /// </summary>
         /// <param name="effectName">The name (verbatim) of the effect.</param>
         public virtual void Play(string effectName) { }
 
         /// <summary>
         /// Virtual method. Use to return this object to the pool.
         /// </summary>
-        public virtual void ReturnToPool()
+        public virtual void KillAndReturnToPool()
         {
             gameObject.SetActive(false);
             PoolHandler.GiveObject(this);
         }
 
-        float EvaluateHits()
+        protected void EvaluateHits()
         {
-            return Mathf.Clamp(Traits.hitsCurve.Evaluate(hits), 0f, 1f);
+            effectiveness = Mathf.Clamp(Traits.hitsCurve.Evaluate(hits), 0f, 1f);
         }
         /// <summary>
         /// Used to apply damage hits to the component.
         /// </summary>
-        void Hit()
+        public void DoHit()
         {
-            hits = Mathf.Clamp(hits, 0f, componentTraits.maxHits);
-        }
-        /// <summary>
-        /// Would be used to repool this component but its not necessary. This method has no effect. 
-        /// </summary>
-        void Die()
-        {
-            ReturnToPool();
+            hits = Mathf.Clamp(hits + 1f, 0f, componentTraits.maxHits);
+            EvaluateHits();
         }
 
     }

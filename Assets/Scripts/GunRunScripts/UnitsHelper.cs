@@ -1,5 +1,5 @@
 using UnityEngine;
-public static class MathUtilities
+public static class UnitsHelper
 {
     public static float metersPerSecToKPH = 0.0036f, Nm2Kwatts = 1000.0f * 9.5488f;/*  */
     public const int wheelQuantity = 4;
@@ -42,13 +42,8 @@ public static class MathUtilities
         //eqn: Power (watts) = Torque (N.m) * Speed (RPM) / 9.5488 
         return speed * torque / Nm2Kwatts;
     }
-    public static float MetricTopSpeedWithDrag(float horsepower, float drag)
+    public static float GetTopSpeedFrom(float horsepower, float drag)
     {
         return Mathf.Pow(2f * horsepower / drag, Mathf.Exp(1f / 3f));
-    }
-
-    public static float LogisticSigmoid(float L, float k, float value)
-    {
-        return L / (1f + Mathf.Pow(-k * value, Mathf.Exp(0f)));
     }
 }

@@ -6,9 +6,9 @@ namespace com.braineeeeDevs.gr
     /// </summary>
     public class Wheel : VehicleComponent
     {
-        protected WheelCollider wheelCollider;
+        [SerializeField] protected WheelCollider wheelCollider;
         public MeshRenderer mesh;
-        public float tireDiameter;
+        public float tireDiameter, motorTorque, brakeTorque;
         public WheelCollider Collider
         {
             get
@@ -17,12 +17,12 @@ namespace com.braineeeeDevs.gr
             }
             set
             {
-                wheelCollider = value;
+                if (wheelCollider != null)
+                    wheelCollider = value;
             }
         }
         public override void Start()
         {
-            owner = CameraController.cameraControls.playerControls;
             GetComponent<MeshCollider>().transform.localScale = Vector3.one * 0.97f;
         }
         /// <summary>
@@ -33,21 +33,26 @@ namespace com.braineeeeDevs.gr
         public override void Operate(float inputTorque)
         {
             base.Operate();
-            if (owner != null && wheelCollider != null)
+            if (effectiveness <= 0f && Collider != null)
             {
-                if (effectiveness == 0f)
-                {
-                    Jetison();
-                }
-                else if (!owner.applyBrakes)
-                {
-                    inputTorque *= effectiveness;
-                    wheelCollider.motorTorque = inputTorque;
-                    wheelCollider.brakeTorque = 0f;
-                    //ComputeSlip(inputTorque);
-                    ApplyPose();
-                }
+                Jetison();
             }
+            else
+            {
+                if (wheelCollider != null)
+                {
+                    if (!owner.applyBrakes)
+                    {
+                        inputTorque *= effectiveness;
+                        wheelCollider.motorTorque = inputTorque;
+                        wheelCollider.brakeTorque = 0f;
+                    }
+
+                    motorTorque = wheelCollider.motorTorque;
+                    brakeTorque = wheelCollider.brakeTorque;
+                }
+            } //ComputeSlip(inputTorque);
+            ApplyPose();
         }
         ///<summary>
         /// Computes the wheel's slip and speed.    
@@ -73,8 +78,11 @@ namespace com.braineeeeDevs.gr
         {
             Vector3 wheelPos = new Vector3();
             Quaternion wheelRot = new Quaternion();
-            wheelCollider.GetWorldPose(out wheelPos, out wheelRot);
-            transform.parent.rotation = wheelRot * Quaternion.Euler(0f, 180f, 0f);
+            if (Collider != null)
+            {
+                wheelCollider.GetWorldPose(out wheelPos, out wheelRot);
+                transform.parent.rotation = wheelRot * Quaternion.Euler(0f, 180f, 0f);
+            }
         }
         protected void Jetison()
         {

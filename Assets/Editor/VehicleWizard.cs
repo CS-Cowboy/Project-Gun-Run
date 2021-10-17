@@ -10,14 +10,15 @@ namespace com.braineeeeDevs.gr.Editor
     /// </summary>
     public class VehicleWizard : ScriptableWizard
     {
-        public string vehicleFilename = "Enter Value";
+        public string vehicleFilename = "ford_f-150";
         public bool isPlayer = true;
         private bool isComplete = false;
         private Body vehicle;
         public ComponentTraits attributes;
         private Controller controller;
         private Wheel firstTire, lastTire;
-        private Wheel[] tmpWheels = new Wheel[MathUtilities.wheelQuantity];
+        private SwayBar front_swaybar;
+        private Wheel[] tmpWheels = new Wheel[UnitsHelper.wheelQuantity];
         static string wheelTag = "Wheel", colliderTag = "Collider";
         /// <summary>
         /// Used by the UnityEditor to      play a menu to use this class.
@@ -56,7 +57,6 @@ namespace com.braineeeeDevs.gr.Editor
         protected void RigVehicle(GameObject newVehicle)
         {
             vehicle = newVehicle.gameObject.AddComponent<Body>();
-            vehicle.Traits = attributes;
             this.BuildPlayer();
 
             var colliderMeshes = this.GetSubMeshes("collider");
@@ -124,7 +124,9 @@ namespace com.braineeeeDevs.gr.Editor
         {
             var camera = vehicle.gameObject.GetComponentInChildren<Camera>();
             vehicle.isPlayer = isPlayer;
-            vehicle.GetComponent<MeshCollider>().convex = true;
+            vehicle.GetComponent<MeshCollider>().enabled = false;
+            vehicle.Traits = attributes;
+
             if (isPlayer)
             {
                 camera.usePhysicalProperties = false;
@@ -136,6 +138,8 @@ namespace com.braineeeeDevs.gr.Editor
                 cameraControls.settings = attributes.cameraTraits;
                 vehicle.Orbiter = camera.transform.parent;
                 controller.target = vehicle;
+
+                vehicle.Owner = controller;
                 vehicle.Orbiter.localRotation = camera.transform.localRotation = Quaternion.identity;
                 camera.transform.localPosition = new Vector3(0f, 2f, -6f);
                 if (vehicle.Traits.hudPrefab != null)
@@ -148,6 +152,7 @@ namespace com.braineeeeDevs.gr.Editor
             {
                 DestroyImmediate(camera);
             }
+
         }
         /// <summary>
         /// Builds the wheels.
@@ -157,7 +162,7 @@ namespace com.braineeeeDevs.gr.Editor
         protected bool BuildWheelsFrom(List<MeshRenderer> meshes)
         {
             Wheel whl = null;
-            if (meshes.Count == MathUtilities.wheelQuantity && meshes.Count % 2 == 0)
+            if (meshes.Count == UnitsHelper.wheelQuantity && meshes.Count % 2 == 0)
             {
                 for (int c = 0; c < meshes.Count; c++)
                 {
@@ -168,9 +173,11 @@ namespace com.braineeeeDevs.gr.Editor
                         firstTire = whl;
                     }
                     tmpWheels[c] = whl;
-                    var brake =whl.transform.parent.gameObject.AddComponent<Brake>();
+                    Debug.LogWarning(string.Format("WheelCollider->{0} ", whl.Collider));
+                    var brake = whl.transform.parent.gameObject.AddComponent<Brake>();
                     brake.Target = whl;
                     brake.Traits = attributes;
+                    brake.Owner = controller;
                 }
                 lastTire = whl;
 
@@ -203,35 +210,43 @@ namespace com.braineeeeDevs.gr.Editor
                         diff.left = tmpWheels[2];
                         diff.right = tmpWheels[3];
                     }
-                    diff.Traits = attributes;
                 }
                 else if (meshName.Contains("engine"))
                 {
                     controller.engine = mesh.gameObject.AddComponent<Engine>();
-                    controller.engine.Traits = attributes;
                     controller.engine.engTraits = attributes.engineTraits;
                 }
                 else if (meshName.Contains("transmission"))
                 {
                     controller.transmission = mesh.gameObject.AddComponent<Transmission>();
-                    controller.transmission.Traits = attributes;
-                    controller.transmission.trans = attributes.trannyTraits;
                 }
                 else if (meshName.Contains("swaybar"))
                 {
-                    var swaybar = mesh.gameObject.AddComponent<SwayBar>();
-                    swaybar.Traits = attributes;
-                    swaybar.Wheels = new Wheel[2] { tmpWheels[0], tmpWheels[1] };
-                } else if(meshName.Contains("steering"))
+                    if (front_swaybar == null)
+                    {
+                        front_swaybar = mesh.gameObject.AddComponent<SwayBar>();
+
+                        front_swaybar.Wheels = new Wheel[2] { tmpWheels[0], tmpWheels[1] };
+                    }
+                    else
+                    {
+                        var swaybar = mesh.gameObject.AddComponent<SwayBar>();
+
+                        swaybar.Wheels = new Wheel[2] { tmpWheels[2], tmpWheels[3] };
+                    }
+                }
+                else if (meshName.Contains("steering"))
                 {
                     var steering = mesh.gameObject.AddComponent<SteeringMechanism>();
-                    steering.Left = tmpWheels[0];
-                    steering.Right = tmpWheels[1];
+                    steering.Wheels = new Wheel[2] { tmpWheels[0], tmpWheels[1] };
                     controller.steeringMechanism = steering;
                 }
                 var meshCollider = mesh.GetComponent<MeshCollider>();
                 meshCollider.convex = true;
                 meshCollider.transform.localScale = Vector3.one * 0.97f;
+                var comp = mesh.GetComponent<VehicleComponent>();
+                comp.Owner = controller;
+                comp.Traits = attributes;
             }
         }
         protected Light BuildLight(GameObject obj, bool isFogLamp)
@@ -249,7 +264,7 @@ namespace com.braineeeeDevs.gr.Editor
         /// Builds an individual wheel.
         /// </summary>
         /// <param name="mesh">One mesh to represent the wheel.</param>
-        /// <returns>A bool representing success (with true) or failure (with false).</returns>
+        /// <returns>A bool representing success (with true) or failure (with false).</returns> 
         protected Wheel BuildWheel(MeshRenderer mesh)
         {
             var newWheel = mesh.gameObject.AddComponent<Wheel>();
@@ -260,6 +275,7 @@ namespace com.braineeeeDevs.gr.Editor
             collider.transform.localScale = Vector3.one * 0.97f;
             colliderObject.name = mesh.gameObject.name + colliderObject.name;
             newWheel.Collider = colliderObject.AddComponent<WheelCollider>();
+            newWheel.Owner = controller;
             newWheel.Collider.radius = GetTireSize(mesh, newWheel);
             WheelFrictionCurve friction = new WheelFrictionCurve();
             friction.extremumSlip = 0.4f;

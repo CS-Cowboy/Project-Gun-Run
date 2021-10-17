@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+    
 namespace com.braineeeeDevs.gr
 {
 
@@ -38,14 +38,12 @@ namespace com.braineeeeDevs.gr
         }
         public override void Start()
         {
-            owner = CameraController.cameraControls.playerControls;
             owner.AssignTarget(this);
             foreach (Transform t in GetComponentsInChildren<Transform>())
             {
                 if (t.name.ToLower().Contains("orbiter"))
                 {
                     orbiter = t;
-                    Debug.Log("Orbiter found.");
                     break;
                 }
             }
@@ -55,6 +53,6 @@ namespace com.braineeeeDevs.gr
             simulator.drag = simulator.angularDrag = componentTraits.drag;
             CameraController.cameraControls.playerCamera.transform.localPosition = CameraController.cameraControls.playerControls.target.Traits.cameraTraits.localPositionAtStart;
             CameraController.cameraControls.playerCamera.transform.rotation = CameraController.cameraControls.playerControls.target.transform.rotation;
-        }
+        }   
     }
 }

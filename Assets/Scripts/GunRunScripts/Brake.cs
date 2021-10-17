@@ -1,8 +1,10 @@
+using UnityEngine;
+
 namespace com.braineeeeDevs.gr
 {
     public class Brake : VehicleComponent
     {
-        protected Wheel target;
+        [SerializeField] protected Wheel target;
         public Wheel Target
         {
             set { target = value; }
@@ -13,13 +15,15 @@ namespace com.braineeeeDevs.gr
         }
         public override void Start()
         {
-            owner = CameraController.cameraControls.playerControls;
             target = GetComponentInChildren<Wheel>();
         }
         public void ApplyBrake()
         {
-            target.Collider.motorTorque = 0f;
-            target.Collider.brakeTorque = owner.target.Traits.brakeTorque * effectiveness;
+            if (target.Collider != null)
+            {
+                target.Collider.motorTorque = 0f;
+                target.Collider.brakeTorque = owner.target.Traits.brakeTorque * effectiveness;
+            }
         }
     }
 

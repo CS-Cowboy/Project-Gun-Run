@@ -15,7 +15,7 @@ namespace com.braineeeeDevs.gr
         {
             base.Operate();
             speed = effectiveness * Mathf.Clamp(speed + input * engTraits.acceleratorDelta * Time.fixedDeltaTime, engTraits.idleSpeed, engTraits.tachometerLimit) ;
-            owner.transmission.Operate(speed);
+            owner.transmission.Operate(speed );
             //Don't forget to add sound fx and animation; this is pointless without effects!
         }
     }

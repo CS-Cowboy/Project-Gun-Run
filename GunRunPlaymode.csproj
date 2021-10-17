@@ -37,12 +37,12 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\GunRunScripts\CameraController.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\ITakeDamage.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\TransmissionTraits.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\ComponentTraits.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Controller.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\SteeringMechanism.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Calculus.cs" />
+     <Compile Include="Assets\Scripts\GunRunScripts\UnitsHelper.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\EngineTraits.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\ObjectPool.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\PlayerHUD.cs" />
@@ -51,10 +51,8 @@
      <Compile Include="Assets\Scripts\GunRunScripts\Body.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Engine.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\VehicleComponent.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\MathUtilities.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\SwayBar.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Wheel.cs" />
-     <Compile Include="Assets\Scripts\GunRunScripts\IShowDamage.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Brake.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\PoolHandler.cs" />
      <Compile Include="Assets\Scripts\GunRunScripts\Differential.cs" />
