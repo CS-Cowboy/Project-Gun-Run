@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4781db8cceb808743a7890a604a3f99a, type: 3}
+  m_Name: GenericComponent
+  m_EditorClassIdentifier: 
+  cameraTraits: {fileID: 11400000, guid: 9e2b858f67b7ea045895246a0f6ccca6, type: 2}
+  engineTraits: {fileID: 11400000, guid: fa5d2085e20ced24382d73bb76c25880, type: 2}
+  transmissionTraits: {fileID: 11400000, guid: c1744c5b034257e46b43e7abe768a847, type: 2}
+  poolID: 1757a937-d131-41ad-b695-41d506a82d3a
+  maxHits: 6
+  brakeTorque: 20000
+  antirollForce: 400
+  topSpeed: 200
+  mass: 1817
+  drag: 0.2
+  headlampRange: 20
+  headlampSpotAngle: 25
+  foglampRange: 60
+  foglampAngle: 45
+  headlampAxisAngle: 15
+  foglampAxisAngle: 10
+  suspensionDistance: 0.1
+  forwardFrictionStiffness: 1.25
+  sideFrictionStiffness: 1.15
+  wheelBaseLength: 3.9079201
+  wheelBaseWidth: 1.8084781
+  poolCapacity: 5
+  hitsCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.0029563904
+      value: 0.9967041
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 6.000905
+      value: 0.020706177
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  hudPrefab: {fileID: 0}
+  mesh: {fileID: 4076365605000194215, guid: eeb4b1438fe08bb46a8d31635142a5cb, type: 3}

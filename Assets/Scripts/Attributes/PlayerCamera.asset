@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93d202942b1d521439a801c636015bc3, type: 3}
+  m_Name: PlayerCamera
+  m_EditorClassIdentifier: 
+  localPositionAtStart: {x: 0, y: 2, z: -7}
+  cameraAngle: 60
+  focusLength: 10000
+  innerFocus: 1
+  outerFocus: 9999
+  rollSpeed: 3
+  speedMultipler: 4
+  lookSpeed: 10
+  lookAcceleration: 5
+  camSpeed: 2.026933
+  zoomSpeed: 30
+  innerZoomLimit: 7
+  outerZoomLimit: 20
+  lowerCamSpeedLimit: 2
+  upperCamSpeedLimit: 100
+  upperVerticalThetaLimit: 80
+  renderMode: 0

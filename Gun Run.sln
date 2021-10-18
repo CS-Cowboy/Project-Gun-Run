@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GunRunPlayMode", "GunRunPlayMode.csproj", "{822e07ed-6414-e8c6-d57c-6fb0d121d214}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayTests", "PlayTests.csproj", "{1262476b-6ab3-189b-6d45-66f36e8218db}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorAssembly", "EditorAssembly.csproj", "{c2bc8df3-42ce-397a-b63c-8b6f288966e9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{822e07ed-6414-e8c6-d57c-6fb0d121d214}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{822e07ed-6414-e8c6-d57c-6fb0d121d214}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1262476b-6ab3-189b-6d45-66f36e8218db}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1262476b-6ab3-189b-6d45-66f36e8218db}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{c2bc8df3-42ce-397a-b63c-8b6f288966e9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{c2bc8df3-42ce-397a-b63c-8b6f288966e9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
