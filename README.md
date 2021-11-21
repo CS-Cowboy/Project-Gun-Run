@@ -13,6 +13,7 @@ Its in the general shape of a ford f-150, and its set up for direct use with the
 This project is a simulation Therefore you're going to need some AI skills to manage controlling these vehicles... Hope you'll get some use out of it! :
 I almost forgot there is no audio framework in this either. That's just outside the scope of my projects as of now. 
 
+Lastly I'd like to add that you must give credit where credit is due in any derivations. That is, add an attribution giving credit to CS-Cowboy (ie. link to this repo). That's all!
 # Demos
 See this playlist made by mwah: https://youtube.com/playlist?list=PL7OxMrrnAu0NTmLyvhR0Idepk6UxuR62i 
 
