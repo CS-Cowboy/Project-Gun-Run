@@ -1,7 +1,7 @@
 # Project Gun Run
 A semi-complete simulation for 4 wheel a vehicle. Consider this (also) a portfolio demonstration. That said, I would love to see what you can do with it. See the next section.
 # Copying (this is for you, Github user):
-I don't mind if you clone or copy this repo, and in fact I'd be honored.
+I don't mind if you clone or copy this repo, and in fact I'd be honored. I will not permit the use of this in any commercial projects however. If you've ever used the username "Billy4184" on the unity boards or elsewhere, you are forbidden from using this, commercial or otherwise. 
 
 My only stipulation is because this is the culmination of lots of hard work,
 I ask that you don't turn around and sell or claim this source code (or the assets within) as your own.
